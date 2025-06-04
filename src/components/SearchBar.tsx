@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const SearchBarContainer = styled.form`
-    /* position: absolute; */
+    position: absolute;
     top: 0px;
     left: 0; /* サイドバーがある場合はその幅を考慮する必要があるかもしれません */
     right: 0;
