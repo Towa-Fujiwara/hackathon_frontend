@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './app.css';
 import { SideBarButton, sideBarButtonPath } from './components/layout';
 import { fireAuth } from './firebase';

@@ -66,11 +66,10 @@ const StyledButton = styled.button`
         transition: all 0.2s ease;
     }
 `;
-const Icon = styled.div<{ icon: any }>`
+/*const Icon = styled.div<{ icon: any }>`
     display: flex;
     align-items: center;
     justify-content: center;
     width: 20px;
     height: 20px;
-`;
-
+`;*/
