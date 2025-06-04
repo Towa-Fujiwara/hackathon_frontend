@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
+import './app.css';
 import { SideBarButton, sideBarButtonPath } from './components/layout';
 import { fireAuth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
