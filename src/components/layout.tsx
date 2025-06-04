@@ -59,8 +59,6 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ buttons }) => {
 };
 //ヘッダー
 const HeaderButton = styled.button <HeaderProps>`
-
-    display: flex;
     align-items: center; 
     justify-content: center;
     left: ${props => props.left || 'auto'};
