@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomHeader, HeaderButtonType } from '../components/layout';
+import { CustomHeader, type HeaderButtonType } from '../components/layout';
 import { MainSearchBar } from '../components/SearchBar';
 
 export const searchHeaderButtons: HeaderButtonType[] = [

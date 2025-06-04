@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomHeader, HeaderButtonType } from '../components/layout';
+import { CustomHeader, type HeaderButtonType } from '../components/layout';
 
 export const profileHeaderButtons: HeaderButtonType[] = [
     { label: "おすすめ", onClick: () => console.log("Header Button p1"), topOffset: "0px" },
