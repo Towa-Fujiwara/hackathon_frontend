@@ -35,7 +35,7 @@ export const Profiletable: React.FC = () => {
                     user: dummyUser, // UserProfileDataはPostItemDataのuserプロパティ(UserProfile型)と互換性がある想定
                     postId: 1, // number型に
                     text: '今日の東京は晴天です！素晴らしい一日になりそう。 #天気 #日常',
-                    timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30分前のタイムスタンプ
+                    timestamp: new Date(Date.now()).toISOString(), // 30分前のタイムスタンプ
                     likeCount: 15,
                     retweetCount: 3
                 },
