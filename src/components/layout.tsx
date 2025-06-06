@@ -48,7 +48,6 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ buttons }) => {
                 <HeaderButton
                     key={index}
                     onClick={button.onClick}
-                    left={`${index * 170}px`}
                 >
                     {button.icon && <span className="icon">{button.icon}</span>}
                     {button.label}
@@ -59,21 +58,38 @@ export const CustomHeader: React.FC<CustomHeaderProps> = ({ buttons }) => {
 };
 //ヘッダー
 const HeaderButton = styled.button <HeaderProps>`
+    position: relative;
     align-items: center; 
     justify-content: center;
-    left: ${props => props.left || 'auto'};
+   /*left: ${props => props.left || 'auto'};*/
     height: 70px;
-    width: 150px;
-    background-color: #f0f0f0;
+    flex-grow: 1; 
+    flex-basis: 0;  
+    background-color:rgb(255, 255, 255);
+    color: rgb(126, 126, 126);
     padding: 10px 20px;
     border: none;
     border-radius: 20px;
+    &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%; /* 中央から広がるように */
+    transform: translateX(-50%); /* 中央揃え */
+    width: 0; /* 初期状態では幅0 */
+    height: 5px; /* バーの太さ */
+    background-color: rgb(24, 185, 226); /* バーの色 */
+    transition: width 0.3s ease; /* 幅の変化をアニメーション */
+    cursor: pointer;
+    }
     &:hover {
-        background-color: rgb(24, 185, 226);
-        color: #fff;
-        cursor: pointer;
+        background-color: #fff;
+        color: rgb(24, 185, 226);
         transform: scale(1.05);
         transition: all 0.2s ease;
+    }
+    &:hover::after {
+    width: 100%; // ホバー時にバーの幅を100%にする
     }
     top: 20px;  
     z-index: 1000;
@@ -81,17 +97,16 @@ const HeaderButton = styled.button <HeaderProps>`
 `;
 
 const HeaderContainer = styled.header`
-    /* position: relative; */
+    position: relative; 
     width: 860px;  
-    height: 110px;  
+    height: 75px;  
     display: flex;
     flex-direction: row;  
     justify-content: center;  
     align-items: center;  
     padding: 20px;
     gap: 15px;
-    left: 270px;
-    top: 0;  
+    left: 0px;
     background-color: #ffffff;  // 背景色を設定
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  // 影を追加
 `;
@@ -130,7 +145,7 @@ const SideBarContainer = styled.aside`
     margin-top: 150px;
     padding: 0;
     left: 0;
-    top: 50%;
+    top: 45%;
     transform: translateY(-50%);
     background-color: #ffffff;  
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
