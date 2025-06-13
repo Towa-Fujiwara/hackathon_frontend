@@ -2,6 +2,7 @@ import React from 'react';
 import { CustomHeader, type HeaderButtonType } from '../components/layout';
 import { MainSearchBar } from '../components/SearchBar';
 
+
 export const searchHeaderButtons: HeaderButtonType[] = [
     { label: "おすすめ", onClick: () => console.log("Header Button sc1"), topOffset: "80px" },
     { label: "トレンド", onClick: () => console.log("Header Button sc2"), topOffset: "80px" },

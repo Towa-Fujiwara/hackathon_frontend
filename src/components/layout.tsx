@@ -116,7 +116,8 @@ const HeaderContainer = styled.header`
 const SideBar = styled.button <SideBarProps>`
     height: 75px;
     width: 180px;
-    background-color: #f0f0f0;
+    background-color:rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     padding: 10px;
     border: none;
     border-radius: 20px;

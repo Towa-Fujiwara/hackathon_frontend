@@ -149,24 +149,21 @@ export const PostItem: React.FC<PostItemProps> = ({ post }) => {
                 <UserIdAndTimestamp>@{post.user.userId} · {formattedTimestamp}</UserIdAndTimestamp>
             </AuthorInfo>
             <PostText>{post.text}</PostText>
-            {post.timestamp && <UserIdAndTimestamp style={{ marginTop: '8px', textAlign: 'right' }}>{formattedTimestamp}</UserIdAndTimestamp>}
             {/* 画像やインタラクションボタンなどをここに追加 */}
             <PostActionsContainer>
-                {/* 返信ボタン */}
-                <ActionButton onClick={handleReplyClick} $activeColor="#1D9BF0">
-                    <ReplyIcon />
+                {/* いいねボタン */}
+                <ActionButton onClick={handleLikeClick} $isActive={isLiked} $activeColor="#F91880">
+                    <HeartIcon color={isLiked ? '#F91880' : undefined} />
+                    {likeCount > 0 && <ActionCount>{likeCount}</ActionCount>}
                 </ActionButton>
-
                 {/* リツイートボタン */}
                 <ActionButton onClick={handleRetweetClick} $isActive={isRetweeted} $activeColor="#00BA7C">
                     <RetweetIcon color={isRetweeted ? '#00BA7C' : undefined} />
                     {retweetCount > 0 && <ActionCount>{retweetCount}</ActionCount>}
                 </ActionButton>
-
-                {/* いいねボタン */}
-                <ActionButton onClick={handleLikeClick} $isActive={isLiked} $activeColor="#F91880">
-                    <HeartIcon color={isLiked ? '#F91880' : undefined} />
-                    {likeCount > 0 && <ActionCount>{likeCount}</ActionCount>}
+                {/* 返信ボタン */}
+                <ActionButton onClick={handleReplyClick} $activeColor="#1D9BF0">
+                    <ReplyIcon />
                 </ActionButton>
             </PostActionsContainer>
         </PostItemContainer>
