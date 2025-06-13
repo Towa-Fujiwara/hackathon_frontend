@@ -12,6 +12,9 @@ import { NotificationPage } from './pages/NotificationPage';
 import { MessagePage } from './pages/MessagePage';
 import { ProfilePage } from './pages/Profilepage';
 import { SettingsPage } from './pages/SettingsPage';
+import { SetAccount } from './SetAccount';
+
+
 
 
 
@@ -27,6 +30,7 @@ const MainLayout = () => (
 );
 
 const App = () => {
+
     const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
 
     useEffect(() => {
@@ -55,6 +59,7 @@ const App = () => {
                 // --- ログインしていない場合に表示する内容 ---
                 <LoginLayout>
                     <LoginForm />
+                    <SetAccount />
                 </LoginLayout>
             )}
         </BrowserRouter>
