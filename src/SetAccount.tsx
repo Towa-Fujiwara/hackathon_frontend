@@ -12,11 +12,9 @@ export const SetAccount: React.FC = () => {
 
 
     useEffect(() => {
-        // Firebase AuthenticationのIDトークンが変更されたときに呼び出されるリスナーを設定
         const unsubscribe = onIdTokenChanged(fireAuth, async (user) => {
             if (user) {
                 try {
-                    // IDトークンを強制的に更新して取得
                     const token = await user.getIdToken(true);
                     setIdToken(token);
                     setError(null);
@@ -27,7 +25,7 @@ export const SetAccount: React.FC = () => {
                 }
             } else {
                 setIdToken(null);
-                setError("ログインしていません。"); // ユーザーがログインしていない場合
+                setError("ログインしていません。");
             }
         });
 

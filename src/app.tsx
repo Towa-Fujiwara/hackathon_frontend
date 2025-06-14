@@ -20,8 +20,6 @@ export const MainLayout = () => (
 );
 
 const App = () => {
-
-
     return (
         <BrowserRouter>
             <AuthChecker />

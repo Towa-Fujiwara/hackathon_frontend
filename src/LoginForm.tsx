@@ -33,7 +33,7 @@ export const LoginForm: React.FC = () => {
             localStorage.setItem('appToken', appToken);
             console.log('ログイン成功！');
             if (isNewUser) {
-                window.location.href = '/setAccount';
+                window.location.href = '/setaccount';
             } else {
                 window.location.href = '/';
             }
