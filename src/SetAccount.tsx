@@ -40,6 +40,15 @@ export const SetAccount: React.FC = () => {
             setError("認証トークンが見つかりません。ログイン状態を確認してください。");
             return;
         }
+        if (!userId || userId.length < 3) {
+            setError("ユーザーIDは3文字以上で入力してください。");
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9_]+$/.test(userId)) {
+            setError("ユーザーIDは半角英数字とアンダースコアのみ使用できます。");
+            return;
+        }
         try {
             const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users', {
                 method: 'POST',
