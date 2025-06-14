@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { onIdTokenChanged } from 'firebase/auth';
+import { fireAuth } from './firebase';
 export const SetAccount: React.FC = () => {
     // フォームの入力値をstateで管理
     const [username, setUsername] = useState('');
@@ -7,25 +8,48 @@ export const SetAccount: React.FC = () => {
     const [bio, setBio] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [userIcon, setUserIcon] = useState('');
+    const [idToken, setIdToken] = useState<string | null>(null);
 
+
+    useEffect(() => {
+        // Firebase AuthenticationのIDトークンが変更されたときに呼び出されるリスナーを設定
+        const unsubscribe = onIdTokenChanged(fireAuth, async (user) => {
+            if (user) {
+                try {
+                    // IDトークンを強制的に更新して取得
+                    const token = await user.getIdToken(true);
+                    setIdToken(token);
+                    setError(null);
+                } catch (err) {
+                    console.error('Error fetching ID token:', err);
+                    setError("認証情報の取得に失敗しました。再度ログインしてください。");
+                    setIdToken(null);
+                }
+            } else {
+                setIdToken(null);
+                setError("ログインしていません。"); // ユーザーがログインしていない場合
+            }
+        });
+
+        // コンポーネントのアンマウント時にリスナーを解除
+        return () => unsubscribe();
+    }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
+        setError(null); // エラーをリセット
 
-        // localStorageからトークンを取得
-        const token = localStorage.getItem('appToken');
-        if (!token) {
-            setError("認証トークンが見つかりません。再度ログインしてください。");
+        // IDトークンがまだ取得できていない、または認証情報がない場合
+        if (!idToken) {
+            setError("認証トークンが見つかりません。ログイン状態を確認してください。");
             return;
         }
-
         try {
             // プロフィール更新APIを叩く
-            const response = await fetch('http://localhost:8080/api/users/me', {
+            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users/me', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${idToken}`,
                 },
                 body: JSON.stringify({ userId: userId, bio: bio, username: username, iconUrl: userIcon }),
             });
@@ -36,7 +60,7 @@ export const SetAccount: React.FC = () => {
             }
 
             // 成功したらトップページにリダイレクト
-            alert("ようこそ！登録が完了しました。");
+            console.log("ようこそ！登録が完了しました。");
             window.location.href = '/';
 
         } catch (err: any) {

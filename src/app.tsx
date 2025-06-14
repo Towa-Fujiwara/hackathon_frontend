@@ -5,7 +5,7 @@ import { fireAuth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { LoginForm } from './LoginForm';
 import { LoginLayout } from './components/loginlayout';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { SearchPage } from './pages/SearchPage';
 import { NotificationPage } from './pages/NotificationPage';
@@ -23,7 +23,6 @@ const MainLayout = () => (
     <div>
         <SideBarButton buttons={sideBarButtonPath} />
         <main style={{ marginLeft: '270px' }}>
-            {/* Outletは、子ルートのコンポーネントを描画するための場所 */}
             <Outlet />
         </main>
     </div>
@@ -44,7 +43,6 @@ const App = () => {
     return (
         <BrowserRouter>
             {loginUser ? (
-                // --- ログインしている場合に表示する内容 ---
                 <Routes>
                     <Route path="/" element={<MainLayout />}>
                         <Route index element={<HomePage />} />
@@ -56,11 +54,14 @@ const App = () => {
                     </Route>
                 </Routes>
             ) : (
-                // --- ログインしていない場合に表示する内容 ---
-                <LoginLayout>
-                    <LoginForm />
-                    <SetAccount />
-                </LoginLayout>
+                <Routes>
+                    <Route path="login" element={<LoginLayout>
+                        <Route index element={<LoginForm />} />
+                        <Route path="setaccount" element={<SetAccount />} />
+                    </LoginLayout>}>
+                        <Route path="*" element={<Navigate to="/login" replace />} />
+                    </Route>
+                </Routes>
             )}
         </BrowserRouter>
     );

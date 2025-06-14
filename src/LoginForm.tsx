@@ -20,7 +20,7 @@ export const LoginForm: React.FC = () => {
 
             const idToken = await user.getIdToken();
 
-            const response = await fetch('http://localhost:8080/api/auth/google/callback', {
+            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/auth/google/callback', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token: idToken }),

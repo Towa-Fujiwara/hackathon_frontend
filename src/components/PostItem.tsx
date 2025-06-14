@@ -22,10 +22,6 @@ const HeartIcon: React.FC<{ color?: string; size?: number; }> = ({ color = 'curr
     <svg viewBox="0 0 24 24" width={size} height={size} fill={color}><g><path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.478c0-3.064 2.525-5.754 5.403-5.754 2.29 0 3.83 1.58 4.646 2.73.814-1.148 2.354-2.73 4.645-2.73 2.88 0 5.404 2.69 5.404 5.755 0 6.376-7.454 13.11-10.037 13.157H12z"></path></g></svg>
 );
 
-const RetweetIcon: React.FC<{ color?: string; size?: number; }> = ({ color = 'currentColor', size = 18 }) => (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill={color}><g><path d="M23.77 15.67c-.292-.293-.767-.293-1.06 0l-2.22 2.22V7.65c0-2.068-1.683-3.75-3.75-3.75h-5.85c-.414 0-.75.336-.75.75s.336.75.75.75h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22c-.293-.293-.768-.293-1.06 0s-.294.768 0 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5c.294-.292.294-.767 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22c.293.293.768.293 1.06 0s.294-.768 0-1.06l-3.5-3.5c-.145-.147-.337-.22-.53-.22s-.383.072-.53.22l-3.5 3.5c-.294.292-.294.767 0 1.06s.767.293 1.06 0l2.22-2.22V16.7c0 2.068 1.683 3.75 3.75 3.75h5.85c.414 0 .75-.336.75-.75s-.336-.75-.75-.75z"></path></g></svg>
-);
-
 const ReplyIcon: React.FC<{ size?: number }> = ({ size = 18 }) => (
     <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><g><path d="M14.046 2.242l-4.148-.01h-.002c-4.374 0-7.8 3.427-7.8 7.802 0 4.098 3.186 7.206 7.465 7.37v3.828c0 .108.044.286.12.403.142.225.384.36.656.36.272 0 .514-.135.656-.36l6.088-9.85c.143-.23.228-.517.228-.823s-.085-.593-.228-.823l-6.088-9.85c-.142-.225-.384-.36-.656-.36-.272 0-.514.135-.656-.36z"></path></g></svg>
 );
@@ -119,9 +115,6 @@ export const PostItem: React.FC<PostItemProps> = ({ post }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 
-    const [isRetweeted, setIsRetweeted] = useState(false);
-    const [retweetCount, setRetweetCount] = useState(post.retweetCount || 0);
-
     // いいねボタンのクリック処理
     const handleLikeClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // 親要素へのイベント伝播を停止
@@ -129,12 +122,6 @@ export const PostItem: React.FC<PostItemProps> = ({ post }) => {
         setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
     };
 
-    // リツイートボタンのクリック処理
-    const handleRetweetClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setIsRetweeted(!isRetweeted);
-        setRetweetCount(prev => isRetweeted ? prev - 1 : prev + 1);
-    };
 
     // 返信・共有ボタンのダミー処理
     const handleReplyClick = (e: React.MouseEvent) => { e.stopPropagation(); alert('返信'); };
