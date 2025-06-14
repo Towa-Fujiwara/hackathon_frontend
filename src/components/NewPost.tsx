@@ -34,11 +34,11 @@ export const usePosts = (idToken: string | null) => {
                 }
                 setError(errorMessage);
             } finally {
-                setIsLoading(false); // 読み込み完了
+                setIsLoading(false);
             }
         };
 
-        fetchPosts(); // 関数を実行
+        fetchPosts();
     }, []);
 
     const createPost = async (text: string): Promise<void> => {
@@ -123,7 +123,7 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, idToke
                 onChange={(e) => setText(e.target.value)}
                 placeholder="いまどうしてる？"
                 rows={4}
-                style={{ width: '100%', resize: 'vertical', border: '1px solid #1DA1F2', borderRadius: '4px', padding: '8px', backgroundColor: '#ffffff' }}
+                style={{ width: '100%', resize: 'vertical', border: '1px solid #1DA1F2', borderRadius: '4px', padding: '8px', backgroundColor: '#ffffff', color: 'black' }}
             />
             <div style={{ textAlign: 'right', marginTop: '8px' }}>
                 <button type="submit" disabled={!text.trim() || isSubmitting} style={{ padding: '8px 16px', borderRadius: '20px', border: 'none', background: '#1DA1F2', color: 'white', fontWeight: 'bold' }}>

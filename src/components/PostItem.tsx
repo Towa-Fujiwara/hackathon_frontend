@@ -156,11 +156,6 @@ export const PostItem: React.FC<PostItemProps> = ({ post }) => {
                     <HeartIcon color={isLiked ? '#F91880' : undefined} />
                     {likeCount > 0 && <ActionCount>{likeCount}</ActionCount>}
                 </ActionButton>
-                {/* リツイートボタン */}
-                <ActionButton onClick={handleRetweetClick} $isActive={isRetweeted} $activeColor="#00BA7C">
-                    <RetweetIcon color={isRetweeted ? '#00BA7C' : undefined} />
-                    {retweetCount > 0 && <ActionCount>{retweetCount}</ActionCount>}
-                </ActionButton>
                 {/* 返信ボタン */}
                 <ActionButton onClick={handleReplyClick} $activeColor="#1D9BF0">
                     <ReplyIcon />
