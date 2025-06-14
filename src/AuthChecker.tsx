@@ -88,7 +88,7 @@ export const AuthChecker: React.FC = () => {
             </div>
         );
     }
-
+    //a
     if (loginUser && isAccountSetupComplete) {
         return (
             <Routes>
