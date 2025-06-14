@@ -36,14 +36,12 @@ export const SetAccount: React.FC = () => {
         e.preventDefault();
         setError(null); // エラーをリセット
 
-        // IDトークンがまだ取得できていない、または認証情報がない場合
         if (!idToken) {
             setError("認証トークンが見つかりません。ログイン状態を確認してください。");
             return;
         }
         try {
-            // プロフィール更新APIを叩く
-            const response = await fetch('/api/users/', {
+            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,8 +54,6 @@ export const SetAccount: React.FC = () => {
                 const errData = await response.json();
                 throw new Error(errData.error || 'プロフィールの更新に失敗しました。');
             }
-
-            // 成功したらトップページにリダイレクト
             console.log("ようこそ！登録が完了しました。");
             window.location.href = '/';
 
