@@ -55,12 +55,15 @@ const App = () => {
                 </Routes>
             ) : (
                 <Routes>
-                    <Route path="/" element={<LoginLayout>
-                        <Route index element={<LoginForm />} />
-                        <Route path="setaccount" element={<SetAccount />} />
-                    </LoginLayout>}>
-                        <Route path="*" element={<Navigate to="/login" replace />} />
-                    </Route>
+                    <Route path="/*" element={
+                        <LoginLayout>
+                            <Routes>
+                                <Route index element={<LoginForm />} />
+                                <Route path="setaccount" element={<SetAccount />} />
+                            </Routes>
+                        </LoginLayout>
+                    } />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             )}
         </BrowserRouter>
