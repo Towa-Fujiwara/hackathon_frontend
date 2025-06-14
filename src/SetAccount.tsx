@@ -43,7 +43,7 @@ export const SetAccount: React.FC = () => {
         }
         try {
             // プロフィール更新APIを叩く
-            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users/me', {
+            const response = await fetch('/api/users/me', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

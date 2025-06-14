@@ -106,7 +106,7 @@ export const AuthChecker: React.FC = () => {
     } else {
         return (
             <Routes>
-                <Route path="/" element={
+                <Route path="/*" element={
                     <LoginLayout>
                         <Routes>
                             <Route index element={<LoginForm />} />

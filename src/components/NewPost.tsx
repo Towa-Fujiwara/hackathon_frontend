@@ -23,7 +23,7 @@ export const usePosts = (idToken: string | null) => {
             setError(null);
             try {
                 // バックエンドの /api/posts エンドポイントにGETリクエストを送信
-                const response = await axios.get("https://hackathon-backend-723035348521.us-central1.run.app/api/posts");
+                const response = await axios.get("/api/posts");
                 // 成功したら、取得した投稿データでstateを更新
                 setPosts(response.data || []);
             } catch (err) {
@@ -53,7 +53,7 @@ export const usePosts = (idToken: string | null) => {
 
         try {
             const response = await axios.post(
-                "https://hackathon-backend-723035348521.us-central1.run.app/api/posts",
+                "/api/posts",
                 { text },
                 {
                     headers: {

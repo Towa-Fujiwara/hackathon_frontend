@@ -32,7 +32,7 @@ export const ProfilePage: React.FC = () => {
 
             try {
                 // 2. 認証ヘッダーを付けてバックエンドにリクエスト
-                const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/me', {
+                const response = await fetch('/api/me', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
