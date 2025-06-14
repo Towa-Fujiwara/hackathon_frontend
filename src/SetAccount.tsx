@@ -41,7 +41,7 @@ export const SetAccount: React.FC = () => {
             return;
         }
         try {
-            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users/', {
+            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
