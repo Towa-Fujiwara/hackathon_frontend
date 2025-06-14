@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 export type UserProfile = {
-    iconUrl: string;
-    displayName: string;
     userId: string;
+    firebaseUid: string;
+    name: string;
     bio: string;
-    followingCount: number;
-    followersCount: number;
+    iconUrl: string;
+    createdAt: string;
 };
 
 type UserProfileCardProps = {
@@ -50,14 +50,14 @@ const UserId = styled.p`
 export const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
     return (
         <CardContainer>
-            <ProfileIcon src={user.iconUrl} alt={`${user.displayName} icon`} />
-            <UserName>{user.displayName}</UserName>
+            <ProfileIcon src={user.iconUrl} alt={`${user.name} icon`} />
+            <UserName>{user.name}</UserName>
             <UserId>@{user.userId}</UserId>
             <p>{user.bio}</p>
-            <div>
+            {/*<div>
                 <span>{user.followingCount} フォロー中</span>
                 <span>{user.followersCount} フォロワー</span>
-            </div>
+            </div>*/}
             {/* フォローボタンや編集ボタンなどをここに追加 */}
         </CardContainer>
     );

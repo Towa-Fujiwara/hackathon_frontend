@@ -3,12 +3,18 @@ import axios from 'axios';
 // 親コンポーネントに渡すデータの型
 export interface PostData {
     id: string;
-    user_id: string;
+    userId: string;
     text: string;
     image: string;
-    created_at: string;
-    like_count: number;
-    comment_count: number;
+    createdAt: string;
+    user?: {
+        userId: string;
+        firebaseUid: string;
+        name: string;
+        bio: string;
+        iconUrl: string;
+        createdAt: string;
+    };
 }
 
 export const usePosts = (idToken: string | null) => {
@@ -23,7 +29,7 @@ export const usePosts = (idToken: string | null) => {
             setError(null);
             try {
                 // バックエンドの /api/posts エンドポイントにGETリクエストを送信
-                const response = await axios.get("/api/posts");
+                const response = await axios.get("https://hackathon-backend-723035348521.us-central1.run.app/api/posts");
                 // 成功したら、取得した投稿データでstateを更新
                 setPosts(response.data || []);
             } catch (err) {
@@ -53,7 +59,7 @@ export const usePosts = (idToken: string | null) => {
 
         try {
             const response = await axios.post(
-                "/api/posts",
+                "https://hackathon-backend-723035348521.us-central1.run.app/api/posts",
                 { text },
                 {
                     headers: {

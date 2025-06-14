@@ -24,7 +24,7 @@ export const Profiletable: React.FC = () => {
             setError(null);
             try {
                 // バックエンドの /api/posts エンドポイントにGETリクエストを送信
-                const response = await axios.get("https://hackathon-backend-723035348521.us-central1.run.app/api/posts");
+                const response = await axios.get("https://hackathon-backend-723035348521.us-central1.run.app/api/posts/me");
                 // 成功したら、取得した投稿データでstateを更新
                 setUserPosts(response.data || []);
             } catch (err) {
@@ -47,7 +47,7 @@ export const Profiletable: React.FC = () => {
         return <div>読み込み中...</div>;
     }
     if (!userProfile) {
-        return <div>読み込み中...</div>; // データ読み込み中の表示
+        return <div>読み込み中...</div>;
     }
 
     return (
@@ -55,7 +55,7 @@ export const Profiletable: React.FC = () => {
             <UserProfileCard user={userProfile} />
             <CustomHeader buttons={profileHeaderButtons} />
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <PostItem post={userPosts[0]} />
+            <PostItem post={userPosts[0]} user={userProfile} />
         </div>
     );
 };

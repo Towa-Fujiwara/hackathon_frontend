@@ -3,18 +3,22 @@ import styled from 'styled-components';
 import { type UserProfile } from './UserProfile';
 
 // PostItemが受け取るpropsの型定義
+
+
+
 export type PostItemData = {
-    user: UserProfile
-    postId: number;
+    id: string;
+    userId: string;
     text: string;
-    timestamp?: string; // 投稿日時 (文字列として渡すか、Dateオブジェクトで渡してフォーマットするか)
-    imageUrl?: string; // 添付画像のURL
-    likeCount?: number;
-    retweetCount?: number;
+    image: string;
+    createdAt: string;
+    likeCount: number;
+    commentCount: number;
 };
 
 type PostItemProps = {
     post: PostItemData;
+    user: UserProfile;
 };
 
 
@@ -106,12 +110,7 @@ const ActionCount = styled.span`
     margin-left: 6px;
 `;
 
-export const PostItem: React.FC<PostItemProps> = ({ post }) => {
-    // 投稿日時をフォーマットする例 (必要に応じてライブラリを使用)
-    const formattedTimestamp = post.timestamp
-        ? new Date(post.timestamp).toLocaleString()
-        : '';
-
+export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 
@@ -132,8 +131,8 @@ export const PostItem: React.FC<PostItemProps> = ({ post }) => {
             <PostHeader />
             <ProfileIconPlaceholder />
             <AuthorInfo>
-                <DisplayName>{post.user.displayName}</DisplayName>
-                <UserIdAndTimestamp>@{post.user.userId} · {formattedTimestamp}</UserIdAndTimestamp>
+                <DisplayName>{user.name}</DisplayName>
+                <UserIdAndTimestamp>@{user.userId} · {post.createdAt}</UserIdAndTimestamp>
             </AuthorInfo>
             <PostText>{post.text}</PostText>
             {/* 画像やインタラクションボタンなどをここに追加 */}

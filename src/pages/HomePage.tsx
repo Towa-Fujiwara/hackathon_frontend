@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CustomHeader, type HeaderButtonType } from '../components/layout';
-import { CreatePostForm, usePosts } from '../components/NewPost';
+import { CreatePostForm, usePosts, type PostData } from '../components/NewPost';
+import { PostItem } from '../components/PostItem';
 import { fireAuth } from '../firebase';
 
 
@@ -42,11 +43,35 @@ export const HomePage: React.FC = () => {
 
     }, []);
 
-    const { createPost } = usePosts(idToken);
+    const { posts, createPost, isLoading, error } = usePosts(idToken);
     return (
         <div>
             <CustomHeader buttons={homeHeaderButtons} />
             <CreatePostForm onSubmit={createPost} idToken={idToken} />
+            {isLoading && <div>読み込み中...</div>}
+            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {posts.map(post => (
+                <PostItem
+                    key={post.id}
+                    post={{
+                        id: post.id,
+                        userId: post.userId,
+                        text: post.text,
+                        image: post.image,
+                        createdAt: post.createdAt,
+                        likeCount: 0,
+                        commentCount: 0
+                    }}
+                    user={{
+                        name: post.user?.name || 'Unknown User',
+                        userId: post.user?.userId || post.userId,
+                        iconUrl: post.user?.iconUrl || '',
+                        bio: post.user?.bio || '',
+                        firebaseUid: post.user?.firebaseUid || post.userId,
+                        createdAt: post.user?.createdAt || post.createdAt
+                    }}
+                />
+            ))}
         </div>
     );
 };
