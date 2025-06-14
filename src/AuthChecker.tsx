@@ -21,6 +21,7 @@ export const AuthChecker: React.FC = () => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(fireAuth, async (user) => {
+            console.log("認証状態変更:", user ? "ログイン済み" : "未ログイン");
             setLoginUser(user);
             if (user) {
                 try {
@@ -34,8 +35,10 @@ export const AuthChecker: React.FC = () => {
                     });
 
                     if (response.ok) {
+                        console.log("アカウント設定完了");
                         setIsAccountSetupComplete(true);
                     } else if (response.status === 404) {
+                        console.log("アカウント設定未完了");
                         setIsAccountSetupComplete(false);
                     } else {
                         console.error("アカウント設定状態の確認中にエラーが発生しました:", response.status, await response.text());
@@ -46,19 +49,24 @@ export const AuthChecker: React.FC = () => {
                     setIsAccountSetupComplete(false);
                 }
             } else {
+                console.log("ログアウト状態");
                 setIsAccountSetupComplete(null);
             }
         });
         return () => unsubscribe();
     }, []);
     useEffect(() => {
+        console.log("ページ遷移チェック:", { loginUser: !!loginUser, isAccountSetupComplete, currentPath: window.location.pathname });
         if (loginUser && isAccountSetupComplete !== null) {
             if (!isAccountSetupComplete && window.location.pathname !== '/setaccount') {
+                console.log("アカウント設定ページに遷移");
                 navigate('/setaccount', { replace: true });
             } else if (isAccountSetupComplete && window.location.pathname === '/setaccount') {
+                console.log("ホームページに遷移");
                 navigate('/', { replace: true });
             }
         } else if (!loginUser && window.location.pathname !== '/') {
+            console.log("ログインページに遷移");
             navigate('/', { replace: true });
         }
     }, [loginUser, isAccountSetupComplete, navigate]);
