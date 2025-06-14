@@ -43,8 +43,8 @@ export const SetAccount: React.FC = () => {
         }
         try {
             // プロフィール更新APIを叩く
-            const response = await fetch('/api/users/me', {
-                method: 'PUT',
+            const response = await fetch('/api/users', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${idToken}`,
