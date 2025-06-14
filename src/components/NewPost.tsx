@@ -99,9 +99,9 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, idToke
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!text.trim() || isSubmitting) return;
-        if (!idToken) { // idTokenがない場合は投稿できない
-            setError("ログインしていません。"); //
-            return; //
+        if (!idToken) {
+            setError("ログインしていません。");
+            return;
         }
         setIsSubmitting(true);
         setError(null);
@@ -125,6 +125,7 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, idToke
                 rows={4}
                 style={{ width: '100%', resize: 'vertical', border: '1px solid #1DA1F2', borderRadius: '4px', padding: '8px', backgroundColor: '#ffffff', color: 'black' }}
             />
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <div style={{ textAlign: 'right', marginTop: '8px' }}>
                 <button type="submit" disabled={!text.trim() || isSubmitting} style={{ padding: '8px 16px', borderRadius: '20px', border: 'none', background: '#1DA1F2', color: 'white', fontWeight: 'bold' }}>
                     {isSubmitting ? '投稿中...' : 'ポスト'}
