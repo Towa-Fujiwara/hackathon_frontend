@@ -17,12 +17,14 @@ import './app.css';
 export const AuthChecker: React.FC = () => {
     const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
     const [isAccountSetupComplete, setIsAccountSetupComplete] = useState<boolean | null>(null);
+    const [isNavigating, setIsNavigating] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(fireAuth, async (user) => {
             console.log("認証状態変更:", user ? "ログイン済み" : "未ログイン");
             setLoginUser(user);
+            setIsNavigating(false);
             if (user) {
                 try {
                     const token = await user.getIdToken();
@@ -56,20 +58,26 @@ export const AuthChecker: React.FC = () => {
         return () => unsubscribe();
     }, []);
     useEffect(() => {
-        console.log("ページ遷移チェック:", { loginUser: !!loginUser, isAccountSetupComplete, currentPath: window.location.pathname });
+        console.log("ページ遷移チェック:", { loginUser: !!loginUser, isAccountSetupComplete, currentPath: window.location.pathname, isNavigating });
+        if (isNavigating) {
+            return;
+        }
         if (loginUser && isAccountSetupComplete !== null) {
             if (!isAccountSetupComplete && window.location.pathname !== '/setaccount') {
                 console.log("アカウント設定ページに遷移");
+                setIsNavigating(true);
                 navigate('/setaccount', { replace: true });
             } else if (isAccountSetupComplete && window.location.pathname === '/setaccount') {
                 console.log("ホームページに遷移");
+                setIsNavigating(true);
                 navigate('/', { replace: true });
             }
         } else if (!loginUser && window.location.pathname !== '/') {
             console.log("ログインページに遷移");
+            setIsNavigating(true);
             navigate('/', { replace: true });
         }
-    }, [loginUser, isAccountSetupComplete, navigate]);
+    }, [loginUser, isAccountSetupComplete]); // navigateを依存配列から削除
 
     if (loginUser && isAccountSetupComplete === null) {
         return (
