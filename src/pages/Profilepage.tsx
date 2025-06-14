@@ -43,14 +43,18 @@ export const Profiletable: React.FC = () => {
         fetchUserPosts();
     }, []);
 
+    if (isLoading) {
+        return <div>読み込み中...</div>;
+    }
     if (!userProfile) {
-        return <div>Loading...</div>; // データ読み込み中の表示
+        return <div>読み込み中...</div>; // データ読み込み中の表示
     }
 
     return (
         <div>
             <UserProfileCard user={userProfile} />
             <CustomHeader buttons={profileHeaderButtons} />
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <PostItem post={userPosts[0]} />
         </div>
     );

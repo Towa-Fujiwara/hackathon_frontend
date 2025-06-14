@@ -29,14 +29,15 @@ export const LoginForm: React.FC = () => {
                 throw new Error('サーバーでの認証に失敗しました。');
             }
 
-            const { appToken, isNewUser } = await response.json();
+            const { appToken } = await response.json();
             localStorage.setItem('appToken', appToken);
             console.log('ログイン成功！');
-            if (isNewUser) {
-                window.location.href = '/setAccount';
-            } else {
-                window.location.href = '/';
-            }
+            // AuthCheckerの認証状態監視に任せるため、直接遷移を削除
+            // if (isNewUser) {
+            //     window.location.href = '/setaccount';
+            // } else {
+            //     window.location.href = '/';
+            // }
         } catch (error) {
             console.error('サーバーでの認証に失敗しました。', error);
         }

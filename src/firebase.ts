@@ -14,8 +14,15 @@ const firebaseConfig = {
     storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
     messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
     appId: import.meta.env.VITE_APP_ID,
+    databaseURL: import.meta.env.VITE_DATABASE_URL,
 };
 
+// デバッグ情報
+console.log("現在のドメイン:", window.location.hostname);
+console.log("Firebase設定:", {
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+});
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
