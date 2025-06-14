@@ -38,7 +38,7 @@ export const HomePage: React.FC = () => {
             }
         });
 
-        return () => unsubscribe(); // クリーンアップ
+        return () => unsubscribe();
 
     }, []);
 
