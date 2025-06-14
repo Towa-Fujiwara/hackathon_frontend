@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CustomHeader, type HeaderButtonType } from '../components/layout';
-import { CreatePostForm, usePosts, type PostData } from '../components/NewPost';
+import { CreatePostForm, usePosts } from '../components/NewPost';
 import { PostItem } from '../components/PostItem';
 import { fireAuth } from '../firebase';
 
