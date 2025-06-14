@@ -3,11 +3,11 @@ import { onIdTokenChanged } from 'firebase/auth';
 import { fireAuth } from './firebase';
 export const SetAccount: React.FC = () => {
     // フォームの入力値をstateで管理
-    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
     const [userId, setUserId] = useState('');
     const [bio, setBio] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [userIcon, setUserIcon] = useState('');
+    const [iconUrl, setIconUrl] = useState('');
     const [idToken, setIdToken] = useState<string | null>(null);
 
 
@@ -47,7 +47,12 @@ export const SetAccount: React.FC = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${idToken}`,
                 },
-                body: JSON.stringify({ userId: userId, bio: bio, username: username, iconUrl: userIcon }),
+                body: JSON.stringify({
+                    userId: userId,
+                    name: name,
+                    bio: bio,
+                    iconUrl: iconUrl
+                }),
             });
 
             if (!response.ok) {
@@ -78,12 +83,12 @@ export const SetAccount: React.FC = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="username">ユーザー名</label>
+                    <label htmlFor="name">ユーザー名</label>
                     <input
-                        id="username"
+                        id="name"
                         type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         required
                     />
                 </div>
@@ -96,14 +101,14 @@ export const SetAccount: React.FC = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="userIcon">ユーザーアイコン</label>
+                    <label htmlFor="iconUrl">ユーザーアイコン</label>
                     <input
-                        id="userIcon"
+                        id="iconUrl"
                         type="file"
                         accept="image/*"
                         onChange={(e) => {
                             if (e.target.files && e.target.files[0]) {
-                                setUserIcon(URL.createObjectURL(e.target.files[0]));
+                                setIconUrl(URL.createObjectURL(e.target.files[0]));
                             }
                         }}
                     />
