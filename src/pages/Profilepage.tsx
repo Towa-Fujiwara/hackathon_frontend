@@ -3,6 +3,7 @@ import { CustomHeader, type HeaderButtonType } from '../components/layout';
 import { UserProfileCard, type UserProfile } from '../components/UserProfile';
 import { PostItem, type PostItemData } from '../components/PostItem';
 import axios from 'axios';
+import { apiClient } from '../firebase';
 
 
 export const Profiletable: React.FC = () => {
@@ -14,8 +15,13 @@ export const Profiletable: React.FC = () => {
     useEffect(() => {
         // Firebaseなどからユーザープロフィール情報を取得する非同期処理
         const fetchUserProfile = async () => {
-            const user = await axios.get("https://hackathon-backend-723035348521.us-central1.run.app/api/users/me");
-            setUserProfile(user.data);
+            try {
+                const user = await apiClient.get<UserProfile>("/users/me");
+                setUserProfile(user.data);
+            } catch (err) {
+                console.error("ユーザープロフィールの取得に失敗しました:", err);
+                setError("ユーザープロフィールの取得に失敗しました。");
+            }
         };
 
         // Firebaseなどからユーザーのポスト一覧を取得する非同期処理
@@ -24,7 +30,7 @@ export const Profiletable: React.FC = () => {
             setError(null);
             try {
                 // バックエンドの /api/posts エンドポイントにGETリクエストを送信
-                const response = await axios.get("https://hackathon-backend-723035348521.us-central1.run.app/api/posts/me");
+                const response = await apiClient.get("/posts/me");
                 // 成功したら、取得した投稿データでstateを更新
                 setUserPosts(response.data || []);
             } catch (err) {
