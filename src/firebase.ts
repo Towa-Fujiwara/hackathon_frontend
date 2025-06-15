@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import axios from 'axios';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,3 +29,23 @@ console.log("Firebase設定:", {
 const app = initializeApp(firebaseConfig);
 
 export const fireAuth = getAuth(app);
+
+export const apiClient = axios.create({
+    baseURL: 'https://hackathon-backend-723035348521.us-central1.run.app/api',
+});
+
+// リクエストインターセプター: 全てのリクエストの前に実行される処理
+apiClient.interceptors.request.use(
+    async (config) => {
+        const user = fireAuth.currentUser;
+        if (user) {
+            const token = await user.getIdToken(true); // 強制的に最新のトークンを取得
+            // ヘッダーに `Authorization: Bearer <token>` を追加
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
