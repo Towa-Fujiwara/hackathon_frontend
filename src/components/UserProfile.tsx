@@ -47,6 +47,8 @@ export const UserId = styled.p`
     color: gray;
 `;
 
+
+
 export const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
     return (
         <CardContainer>

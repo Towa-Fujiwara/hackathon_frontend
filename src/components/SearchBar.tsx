@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { apiClient } from '../firebase';
-import { UserProfileCard, type UserProfile } from './UserProfile';
+import { type UserProfile } from './UserProfile';
 
 const SearchBarContainer = styled.form`
     position: absolute;
@@ -45,6 +45,28 @@ const SearchButton = styled.button`
     }
 `;
 
+const SearchResultsContainer = styled.div`
+    position: absolute;
+    top: 70px; /* 検索バーの下に配置 */
+    left: 290px;
+    width: 820px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 15px;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+`;
+
+const UserProfileItem = styled.div`
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    &:last-child {
+        border-bottom: none;
+    }
+`;
+
 export const MainSearchBar: React.FC = () => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<UserProfile[]>([]);
@@ -71,15 +93,25 @@ export const MainSearchBar: React.FC = () => {
     };
 
     return (
-        <SearchBarContainer onSubmit={handleSubmit}>
-            <SearchInput
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="キーワードで検索"
-            />
-            <SearchButton type="submit" onSubmit={handleSubmit}>
-            </SearchButton>
-        </SearchBarContainer>
+        <>
+            <SearchBarContainer onSubmit={handleSubmit}>
+                <SearchInput
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="キーワードで検索"
+                />
+                <SearchButton type="submit" onSubmit={handleSubmit}>
+                </SearchButton>
+            </SearchBarContainer>
+            <SearchResultsContainer>
+                {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+                {results.map((user) => (
+                    // UserProfileにidとnameプロパティがあると仮定
+                    // 実際のデータ構造に合わせてキーと表示内容を調整してください
+                    <UserProfileItem key={user.userId}>{user.name}</UserProfileItem>
+                ))}
+            </SearchResultsContainer>
+        </>
     );
 };
