@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { type UserProfile } from './UserProfile';
-
-// PostItemが受け取るpropsの型定義
-
-
+import { apiClient } from '../firebase';
 
 export type PostItemData = {
     id: string;
@@ -21,7 +18,6 @@ type PostItemProps = {
     user: UserProfile;
 };
 
-
 const HeartIcon: React.FC<{ color?: string; size?: number; }> = ({ color = 'currentColor', size = 18 }) => (
     <svg viewBox="0 0 24 24" width={size} height={size} fill={color}><g><path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.478c0-3.064 2.525-5.754 5.403-5.754 2.29 0 3.83 1.58 4.646 2.73.814-1.148 2.354-2.73 4.645-2.73 2.88 0 5.404 2.69 5.404 5.755 0 6.376-7.454 13.11-10.037 13.157H12z"></path></g></svg>
 );
@@ -31,12 +27,12 @@ const ReplyIcon: React.FC<{ size?: number }> = ({ size = 18 }) => (
 );
 
 const PostItemContainer = styled.div`
-    border: 1px solid #ccc; /* X風の薄い境界線 */
+    border: 1px solid #ccc;
     padding: 15px;
-    margin-bottom: 10px; /* 各投稿間のマージン */
+    margin-bottom: 10px;
     background-color: #fff;
     display: flex;
-    flex-direction: column; /* 縦に要素を並べる */
+    flex-direction: column;
 `;
 
 const PostHeader = styled.div`
@@ -48,7 +44,7 @@ const PostHeader = styled.div`
 const AuthorInfo = styled.div`
     margin-left: 10px;
     display: flex;
-    flex-direction: column; /* 名前とIDを縦に */
+    flex-direction: column;
     color: rgb(0,0,0);
 `;
 
@@ -57,35 +53,32 @@ const DisplayName = styled.span`
 `;
 
 const UserIdAndTimestamp = styled.span`
-    color: #536471; /* X風のグレー */
+    color: #536471;
     font-size: 0.9em;
 `;
 
 const PostText = styled.p`
     margin: 0;
     line-height: 1.4;
-    white-space: pre-wrap; /* 改行をそのまま表示 */
+    white-space: pre-wrap;
     color: rgb(0,0,0);
 `;
 
-// 今はプロフィールページなので投稿者情報は固定かもしれないが、汎用的に作るならpropsで渡す
 const ProfileIconPlaceholder = styled.div`
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: #ccc; /
+    background-color: #ccc;
 `;
-
 
 const PostActionsContainer = styled.div`
     display: flex;
     justify-content: space-between;
     margin-top: 12px;
-    max-width: 425px; /* XのUIに近い幅 */
+    max-width: 425px;
     color: #536471;
 `;
 
-// activeColorプロパティを受け取り、アクティブ時の色を変更する
 const ActionButton = styled.button<{ $isActive?: boolean; $activeColor?: string; }>`
     background: none;
     border: none;
@@ -96,8 +89,6 @@ const ActionButton = styled.button<{ $isActive?: boolean; $activeColor?: string;
     padding: 5px;
     border-radius: 999px;
     transition: background-color 0.2s, color 0.2s;
-
-    /* propsに応じて色を変更 */
     color: ${props => props.$isActive ? props.$activeColor : '#536471'};
     
     &:hover {
@@ -114,20 +105,29 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 
-    // いいねボタンのクリック処理
-    const handleLikeClick = (e: React.MouseEvent) => {
-        e.stopPropagation(); // 親要素へのイベント伝播を停止
+    const handleLikeClick = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+
+        const previousIsLiked = isLiked;
+        const previousLikeCount = likeCount;
+
         setIsLiked(!isLiked);
         setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
+
+        try {
+            await apiClient.post(`/posts/${post.id}/like`);
+        } catch (error) {
+            console.error("いいねの処理に失敗しました:", error);
+            setIsLiked(previousIsLiked);
+            setLikeCount(previousLikeCount);
+            alert("エラーが発生しました。再度お試しください。");
+        }
     };
 
-
-    // 返信・共有ボタンのダミー処理
     const handleReplyClick = (e: React.MouseEvent) => { e.stopPropagation(); alert('返信'); };
 
     return (
         <PostItemContainer>
-            {/* プロフィールページ内の自分の投稿なので、投稿者情報は省略または固定化するケースもある */}
             <PostHeader />
             <ProfileIconPlaceholder />
             <AuthorInfo>
@@ -135,14 +135,11 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
                 <UserIdAndTimestamp>@{user.userId} · {post.createdAt}</UserIdAndTimestamp>
             </AuthorInfo>
             <PostText>{post.text}</PostText>
-            {/* 画像やインタラクションボタンなどをここに追加 */}
             <PostActionsContainer>
-                {/* いいねボタン */}
                 <ActionButton onClick={handleLikeClick} $isActive={isLiked} $activeColor="#F91880">
                     <HeartIcon color={isLiked ? '#F91880' : undefined} />
                     {likeCount > 0 && <ActionCount>{likeCount}</ActionCount>}
                 </ActionButton>
-                {/* 返信ボタン */}
                 <ActionButton onClick={handleReplyClick} $activeColor="#1D9BF0">
                     <ReplyIcon />
                 </ActionButton>
