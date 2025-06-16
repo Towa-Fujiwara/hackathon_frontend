@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { apiClient } from '../firebase';
-import { type UserProfile } from './UserProfile';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBarContainer = styled.form`
     position: absolute;
@@ -45,7 +44,7 @@ const SearchButton = styled.button`
     }
 `;
 
-const SearchResultsContainer = styled.div`
+export const SearchResultsContainer = styled.div`
     position: absolute;
     top: 70px; /* 検索バーの下に配置 */
     left: 290px;
@@ -59,7 +58,7 @@ const SearchResultsContainer = styled.div`
     overflow-y: auto;
 `;
 
-const UserProfileItem = styled.div`
+export const UserProfileItem = styled.div`
     padding: 8px 10px;
     border-bottom: 1px solid #eee;
     &:last-child {
@@ -69,27 +68,14 @@ const UserProfileItem = styled.div`
 
 export const MainSearchBar: React.FC = () => {
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState<UserProfile[]>([]);
-    const [error, setError] = useState<string | null>(null);
+
+    const navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
         if (!query.trim()) {
             return;
         }
-        console.log("メイン検索:", query);
-        try {
-            const res = await apiClient.get<UserProfile[]>("/search", {
-                params: {
-                    q: query
-                }
-            });
-            setResults(res.data); // 取得した検索結果でstateを更新
-            console.log("検索結果:", res.data);
-        } catch (err) {
-            console.error("検索に失敗しました:", err);
-            setError("検索に失敗しました。");
-        }
+        navigate(`/searchresult?q=${encodeURIComponent(query)}`);
     };
 
     return (
@@ -104,14 +90,6 @@ export const MainSearchBar: React.FC = () => {
                 <SearchButton type="submit" onSubmit={handleSubmit}>
                 </SearchButton>
             </SearchBarContainer>
-            <SearchResultsContainer>
-                {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-                {results.map((user) => (
-                    // UserProfileにidとnameプロパティがあると仮定
-                    // 実際のデータ構造に合わせてキーと表示内容を調整してください
-                    <UserProfileItem key={user.userId}>{user.name}</UserProfileItem>
-                ))}
-            </SearchResultsContainer>
         </>
     );
 };

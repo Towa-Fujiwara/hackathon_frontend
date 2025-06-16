@@ -12,6 +12,7 @@ import { NotificationPage } from './pages/NotificationPage';
 import { MessagePage } from './pages/MessagePage';
 import { ProfilePage } from './pages/Profilepage';
 import { SettingsPage } from './pages/SettingsPage';
+import { SearchResultsPage } from './pages/SearchResultPage';
 import { MainLayout } from './app';
 import './app.css';
 import axios from 'axios';
@@ -110,9 +111,11 @@ const MainLayoutRoutes = () => (
         <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
             <Route path="search" element={<SearchPage />} />
+            <Route path="searchresult" element={<SearchResultsPage />} />
             <Route path="notifications" element={<NotificationPage />} />
             <Route path="messages" element={<MessagePage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="profile" element={<ProfilePage />} />
             {/* MainLayout内の未定義URLはホームへ */}
             <Route path="*" element={<Navigate to="/" replace />} />
