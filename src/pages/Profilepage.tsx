@@ -61,7 +61,13 @@ export const Profiletable: React.FC = () => {
             <UserProfileCard user={userProfile} />
             <CustomHeader buttons={profileHeaderButtons} />
             {error && <p style={{ color: 'red' }}>{error}</p>}
-            <PostItem post={userPosts[0]} user={userProfile} />
+            {userPosts.length > 0 ? (
+                userPosts.map(post => (
+                    <PostItem key={post.id} post={post} user={userProfile} />
+                ))
+            ) : (
+                <p>まだ投稿がありません。</p>
+            )}
         </div>
     );
 };
