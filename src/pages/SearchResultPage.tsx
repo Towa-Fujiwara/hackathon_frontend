@@ -10,6 +10,7 @@ const SearchResultsContainer = styled.div`
     left: 290px;
     width: 820px;
     background-color: white;
+    color: rgba(0,0,0,0);
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     padding: 15px;
@@ -48,7 +49,7 @@ export const SearchResultsPage: React.FC = () => {
                 const res = await apiClient.get<UserProfile[]>("/search", {
                     params: { q: query }
                 });
-                setResults(res.data);
+                setResults(res.data || []);
                 console.log("検索結果:", res.data);
             } catch (err) {
                 console.error("検索に失敗しました:", err);

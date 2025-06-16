@@ -115,7 +115,7 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
         setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
 
         try {
-            await apiClient.post(`/posts/${post.id}/like`);
+            await apiClient.post(`/posts/${post.id}/like`, {});
         } catch (error) {
             console.error("いいねの処理に失敗しました:", error);
             setIsLiked(previousIsLiked);
