@@ -1,7 +1,7 @@
-
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { apiClient } from '../firebase';
+import { UserProfileCard, type UserProfile } from './UserProfile';
 
 const SearchBarContainer = styled.form`
     position: absolute;
@@ -47,11 +47,27 @@ const SearchButton = styled.button`
 
 export const MainSearchBar: React.FC = () => {
     const [query, setQuery] = useState('');
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const [results, setResults] = useState<UserProfile[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+        if (!query.trim()) {
+            return;
+        }
         console.log("メイン検索:", query);
-        // 実際の検索処理
+        try {
+            const res = await apiClient.get<UserProfile[]>("/search", {
+                params: {
+                    q: query
+                }
+            });
+            setResults(res.data); // 取得した検索結果でstateを更新
+            console.log("検索結果:", res.data);
+        } catch (err) {
+            console.error("検索に失敗しました:", err);
+            setError("検索に失敗しました。");
+        }
     };
 
     return (
@@ -62,7 +78,7 @@ export const MainSearchBar: React.FC = () => {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="キーワードで検索"
             />
-            <SearchButton type="submit">
+            <SearchButton type="submit" onSubmit={handleSubmit}>
             </SearchButton>
         </SearchBarContainer>
     );

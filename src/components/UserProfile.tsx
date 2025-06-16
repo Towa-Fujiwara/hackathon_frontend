@@ -10,11 +10,11 @@ export type UserProfile = {
     createdAt: string;
 };
 
-type UserProfileCardProps = {
+export type UserProfileCardProps = {
     user: UserProfile;
 };
 
-const CardContainer = styled.div`
+export const CardContainer = styled.div`
     padding: 20px;
     border-bottom: 1px solid #eee;
     position: relative; 
@@ -33,17 +33,17 @@ const CardContainer = styled.div`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  // 影を追加
 `;
 
-const ProfileIcon = styled.img`
+export const ProfileIcon = styled.img`
     width: 80px;
     height: 80px;
     border-radius: 50%;
 `;
 
-const UserName = styled.h2`
+export const UserName = styled.h2`
     margin: 0;
 `;
 
-const UserId = styled.p`
+export const UserId = styled.p`
     color: gray;
 `;
 
