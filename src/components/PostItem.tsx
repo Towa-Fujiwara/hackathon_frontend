@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { type UserProfile } from './UserProfile';
 import { apiClient } from '../firebase';
+import axios from 'axios';
 
 export type PostItemData = {
     id: string;
@@ -11,6 +13,14 @@ export type PostItemData = {
     createdAt: string;
     likeCount: number;
     commentCount: number;
+};
+
+export type CommentData = {
+    id: string;
+    userId: string;
+    postId: string;
+    text: string;
+    createdAt: string;
 };
 
 type PostItemProps = {
@@ -33,6 +43,7 @@ const PostItemContainer = styled.div`
     background-color: #fff;
     display: flex;
     flex-direction: column;
+    width: 870px;
 `;
 
 const PostHeader = styled.div`
@@ -64,9 +75,10 @@ const PostText = styled.p`
     color: rgb(0,0,0);
 `;
 
-const ProfileIconPlaceholder = styled.div`
+const ProfileIconPlaceholder = styled.div<{ $iconUrl?: string }>`
     width: 48px;
     height: 48px;
+    background-image: ${props => (props.$iconUrl ? `url(${props.$iconUrl})` : 'none')};
     border-radius: 50%;
     background-color: #ccc;
 `;
@@ -102,6 +114,7 @@ const ActionCount = styled.span`
 `;
 
 export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
+    const navigate = useNavigate();
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 
@@ -123,13 +136,13 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
             alert("エラーが発生しました。再度お試しください。");
         }
     };
-
-    const handleReplyClick = (e: React.MouseEvent) => { e.stopPropagation(); alert('返信'); };
-
+    const handleNavigate = () => {
+        navigate(`/posts/${post.id}`);
+    }
     return (
-        <PostItemContainer>
+        <PostItemContainer onClick={handleNavigate}>
             <PostHeader />
-            <ProfileIconPlaceholder />
+            <ProfileIconPlaceholder $iconUrl={user.iconUrl} />
             <AuthorInfo>
                 <DisplayName>{user.name}</DisplayName>
                 <UserIdAndTimestamp>@{user.userId} · {post.createdAt}</UserIdAndTimestamp>
@@ -140,10 +153,87 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
                     <HeartIcon color={isLiked ? '#F91880' : undefined} />
                     {likeCount > 0 && <ActionCount>{likeCount}</ActionCount>}
                 </ActionButton>
-                <ActionButton onClick={handleReplyClick} $activeColor="#1D9BF0">
+                <ActionButton onClick={handleNavigate} $activeColor="#1D9BF0">
                     <ReplyIcon />
                 </ActionButton>
             </PostActionsContainer>
         </PostItemContainer>
     );
+};
+
+
+export const useComments = (postId: string, idToken: string | null) => {
+    // 投稿リストの状態管理
+    const [comments, setComments] = useState<CommentData[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!postId) {
+            return;
+        }
+        const fetchComments = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const response = await apiClient.get(`/posts/${postId}/comments`);
+                // 成功したら、取得した投稿データでstateを更新
+                setComments(response.data || []);
+            } catch (err) {
+                // エラーハンドリング
+                let errorMessage = "投稿の読み込みに失敗しました。";
+                if (axios.isAxiosError(err) && err.response) {
+                    errorMessage = err.response.data.error || errorMessage;
+                }
+                setError(errorMessage);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchComments();
+    }, [postId]);
+
+    const createComment = async (text: string): Promise<void> => {
+        if (!idToken) {
+            const errorMessage = "投稿するにはログインが必要です。";
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.post(
+                `/posts/${postId}/comments`,
+                { text },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${idToken}`,
+                    },
+                }
+            );
+
+            const newComment: CommentData = response.data;
+
+            // 新しい投稿をリストの先頭に追加
+            setComments(prevComments => [newComment, ...prevComments]);
+
+        } catch (err) {
+            let errorMessage = "不明なエラーが発生しました。";
+            if (axios.isAxiosError(err) && err.response) {
+                errorMessage = err.response.data.error || "投稿に失敗しました。";
+            } else if (err instanceof Error) {
+                errorMessage = err.message;
+            }
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { comments, createComment, isLoading, error };
 };
