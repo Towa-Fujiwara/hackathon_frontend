@@ -205,7 +205,7 @@ export const useComments = (postId: string, idToken: string | null) => {
         setError(null);
 
         try {
-            const response = await axios.post(
+            const response = await apiClient.post(
                 `/posts/${postId}/comments`,
                 { text },
                 {

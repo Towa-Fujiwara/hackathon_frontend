@@ -14,9 +14,10 @@ import { ProfilePage } from './pages/Profilepage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SearchResultsPage } from './pages/SearchResultPage';
 import { MainLayout } from './app';
+import { PostPage } from './pages/PostPage';
 import './app.css';
 import axios from 'axios';
-
+//
 const LoadingScreen = () => (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="p-4 rounded-md shadow-lg bg-white">
@@ -117,6 +118,7 @@ const MainLayoutRoutes = () => (
             <Route path="settings" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="posts/:postId" element={<PostPage />} />
             {/* MainLayout内の未定義URLはホームへ */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
