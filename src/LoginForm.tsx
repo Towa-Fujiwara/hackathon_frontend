@@ -1,5 +1,5 @@
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { fireAuth } from "./firebase";
+import { fireAuth, apiClient } from "./firebase";
 import { LoginButton } from "./components/loginlayout";
 import { FcGoogle } from "react-icons/fc";
 
@@ -20,16 +20,12 @@ export const LoginForm: React.FC = () => {
 
             const idToken = await user.getIdToken();
 
-            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/auth/google/callback', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: idToken }),
-            });
-            if (!response.ok) {
-                throw new Error('サーバーでの認証に失敗しました。');
-            }
-
-            const { appToken } = await response.json();
+            const response = await apiClient.post(
+                '/auth/google/callback',
+                { token: idToken },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            const { appToken } = response.data;
             localStorage.setItem('appToken', appToken);
             console.log('ログイン成功！');
             // AuthCheckerの認証状態監視に任せるため、直接遷移を削除

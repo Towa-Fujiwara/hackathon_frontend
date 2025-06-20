@@ -10,7 +10,7 @@ export const notificationHeaderButtons: HeaderButtonType[] = [
 export const NotificationPage: React.FC = () => {
     return (
         <div>
-            <CustomHeader buttons={notificationHeaderButtons} />
+            <CustomHeader $buttons={notificationHeaderButtons} />
         </div>
     );
 };

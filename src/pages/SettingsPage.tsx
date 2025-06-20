@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { type UserProfile, UserProfileCard } from '../components/UserProfile'; // UserProfileCardをインポート
 import { CustomHeader } from '../components/layout';
 import { type HeaderButtonType } from '../components/layout';
+import { apiClient } from '../firebase';
 
 
 
@@ -31,23 +32,14 @@ export const ProfilePage: React.FC = () => {
             }
 
             try {
-                // 2. 認証ヘッダーを付けてバックエンドにリクエスト
-                const response = await fetch('/api/me', {
-                    method: 'GET',
+                // apiClientでGETリクエスト
+                const response = await apiClient.get('/me', {
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`, // "Bearer " + トークン
                     },
                 });
-
-                if (!response.ok) {
-                    // トークン切れなどのエラー
-                    throw new Error('プロフィールの取得に失敗しました。再度ログインしてください。');
-                }
-
-                // 3. レスポンスのJSONをUserProfile型として取得
-                const data: UserProfile = await response.json();
-                setUserProfile(data);
+                setUserProfile(response.data);
 
             } catch (err: any) {
                 setError(err.message);
@@ -88,7 +80,7 @@ export const ProfilePage: React.FC = () => {
 export const SettingsPage: React.FC = () => {
     return (
         <div>
-            <CustomHeader buttons={settingsHeaderButtons} />
+            <CustomHeader $buttons={settingsHeaderButtons} />
             <ProfilePage />
         </div>
     );

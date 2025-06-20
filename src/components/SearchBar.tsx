@@ -1,7 +1,6 @@
-
-
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBarContainer = styled.form`
     position: absolute;
@@ -45,25 +44,52 @@ const SearchButton = styled.button`
     }
 `;
 
+export const SearchResultsContainer = styled.div`
+    position: absolute;
+    top: 70px; /* 検索バーの下に配置 */
+    left: 290px;
+    width: 820px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 15px;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+`;
+
+export const UserProfileItem = styled.div`
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    &:last-child {
+        border-bottom: none;
+    }
+`;
+
 export const MainSearchBar: React.FC = () => {
     const [query, setQuery] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const navigate = useNavigate();
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("メイン検索:", query);
-        // 実際の検索処理
+        if (!query.trim()) {
+            return;
+        }
+        navigate(`/searchresult?q=${encodeURIComponent(query)}`);
     };
 
     return (
-        <SearchBarContainer onSubmit={handleSubmit}>
-            <SearchInput
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="キーワードで検索"
-            />
-            <SearchButton type="submit">
-            </SearchButton>
-        </SearchBarContainer>
+        <>
+            <SearchBarContainer onSubmit={handleSubmit}>
+                <SearchInput
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="キーワードで検索"
+                />
+                <SearchButton type="submit" onSubmit={handleSubmit}>
+                </SearchButton>
+            </SearchBarContainer>
+        </>
     );
 };

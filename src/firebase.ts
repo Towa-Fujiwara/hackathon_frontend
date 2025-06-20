@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import axios from 'axios';
-
+import { getStorage } from "firebase/storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -29,7 +29,7 @@ console.log("Firebase設定:", {
 const app = initializeApp(firebaseConfig);
 
 export const fireAuth = getAuth(app);
-
+export const storage = getStorage(app);
 export const apiClient = axios.create({
     baseURL: 'https://hackathon-backend-723035348521.us-central1.run.app/api',
 });

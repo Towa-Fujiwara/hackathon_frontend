@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import { fireAuth } from './firebase';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+// fireAuth と apiClient をインポートします
+import { fireAuth, apiClient } from './firebase';
 import { LoginLayout } from './components/loginlayout';
 import { LoginForm } from './LoginForm';
 import { SetAccount } from './SetAccount';
@@ -11,112 +12,115 @@ import { NotificationPage } from './pages/NotificationPage';
 import { MessagePage } from './pages/MessagePage';
 import { ProfilePage } from './pages/Profilepage';
 import { SettingsPage } from './pages/SettingsPage';
+import { SearchResultsPage } from './pages/SearchResultPage';
 import { MainLayout } from './app';
+import { PostPage } from './pages/PostPage';
 import './app.css';
+import axios from 'axios';
+//
+const LoadingScreen = () => (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="p-4 rounded-md shadow-lg bg-white">
+            <p className="text-xl text-blue-500 font-bold animate-pulse">ロード中...</p>
+        </div>
+    </div>
+);
 
-export const AuthChecker: React.FC = () => {
-    const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
-    const [isAccountSetupComplete, setIsAccountSetupComplete] = useState<boolean | null>(null);
-    const [isNavigating, setIsNavigating] = useState(false);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(fireAuth, async (user) => {
-            console.log("認証状態変更:", user ? "ログイン済み" : "未ログイン");
-            setLoginUser(user);
-            setIsNavigating(false);
-            if (user) {
-                try {
-                    const token = await user.getIdToken();
-                    const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users/me', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                    });
-
-                    if (response.ok) {
-                        console.log("アカウント設定完了");
-                        setIsAccountSetupComplete(true);
-                    } else if (response.status === 404) {
-                        console.log("アカウント設定未完了");
-                        setIsAccountSetupComplete(false);
-                    } else {
-                        console.error("アカウント設定状態の確認中にエラーが発生しました:", response.status, await response.text());
-                        setIsAccountSetupComplete(false);
-                    }
-                } catch (error) {
-                    console.error("アカウント設定確認中にエラーが発生しました:", error);
-                    setIsAccountSetupComplete(false);
-                }
-            } else {
-                console.log("ログアウト状態");
-                setIsAccountSetupComplete(null);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
-    useEffect(() => {
-        console.log("ページ遷移チェック:", { loginUser: !!loginUser, isAccountSetupComplete, currentPath: window.location.pathname, isNavigating });
-        if (isNavigating) {
-            return;
-        }
-        if (loginUser && isAccountSetupComplete !== null) {
-            if (!isAccountSetupComplete && window.location.pathname !== '/setaccount') {
-                console.log("アカウント設定ページに遷移");
-                setIsNavigating(true);
-                navigate('/setaccount', { replace: true });
-            } else if (isAccountSetupComplete && window.location.pathname === '/setaccount') {
-                console.log("ホームページに遷移");
-                setIsNavigating(true);
-                navigate('/', { replace: true });
-            }
-        } else if (!loginUser && window.location.pathname !== '/') {
-            console.log("ログインページに遷移");
-            setIsNavigating(true);
-            navigate('/', { replace: true });
-        }
-    }, [loginUser, isAccountSetupComplete]); // navigateを依存配列から削除
-
-    if (loginUser && isAccountSetupComplete === null) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="p-4 rounded-md shadow-lg bg-white">
-                    <p className="text-xl text-blue-500 font-bold animate-pulse">ロード中...</p>
-                </div>
-            </div>
-        );
+const ProtectedRoute = ({ isAccountSetupComplete, children }: { isAccountSetupComplete: boolean, children: React.ReactNode }) => {
+    const location = useLocation();
+    if (!isAccountSetupComplete) {
+        return <Navigate to="/setaccount" state={{ from: location }} replace />;
     }
-    //a
-    if (loginUser && isAccountSetupComplete) {
-        return (
-            <Routes>
-                <Route path="/" element={<MainLayout />}>
-                    <Route index element={<HomePage />} />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/notifications" element={<NotificationPage />} />
-                    <Route path="/messages" element={<MessagePage />} />
-                    <Route path="/settings" element={<SettingsPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                </Route>
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        );
-    } else {
-        return (
-            <Routes>
-                <Route path="/*" element={
-                    <LoginLayout>
-                        <Routes>
-                            <Route index element={<LoginForm />} />
-                            <Route path="setaccount" element={<SetAccount />} />
-                        </Routes>
-                    </LoginLayout>
-                } />
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        );
-    }
+    return children;
 };
 
+
+export const AuthChecker: React.FC = () => {
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [isAccountSetupComplete, setIsAccountSetupComplete] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // 認証状態の確認が完了したか
+
+    useEffect(() => {
+        // onAuthStateChanged は unsubscribe 関数を返すので、クリーンアップ時に呼び出す
+        const unsubscribe = onAuthStateChanged(fireAuth, async (user) => {
+            setCurrentUser(user);
+            if (user) {
+                // ログインしている場合、アカウント設定が完了しているか確認
+                try {
+                    // ★ apiClientを正しく使用。ヘッダーは自動で付与されます。
+                    await apiClient.get('/users/me');
+                    // 200 OK -> アカウント設定完了
+                    setIsAccountSetupComplete(true);
+                } catch (error) {
+                    // ★ axiosのエラーをcatchブロックで処理します
+                    if (axios.isAxiosError(error) && error.response?.status === 404) {
+                        // 404 Not Found -> アカウント設定未完了
+                        setIsAccountSetupComplete(false);
+                    } else {
+                        // その他の予期せぬエラー
+                        console.error("アカウント設定の確認エラー:", error);
+                        setIsAccountSetupComplete(false);
+                    }
+                }
+            }
+            // ユーザー情報の有無に関わらず、確認が完了したらローディングを解除
+            setIsLoading(false);
+        });
+
+        // コンポーネントがアンマウントされるときにリスナーを解除
+        return () => unsubscribe();
+    }, []);
+
+    // 認証状態を確認中はローディング画面を表示
+    if (isLoading) {
+        return <LoadingScreen />;
+    }
+
+    return (
+        <Routes>
+            {currentUser ? (
+                // --- ログイン済みユーザー向けのルート ---
+                <>
+                    <Route path="/*" element={
+                        <ProtectedRoute isAccountSetupComplete={isAccountSetupComplete}>
+                            <MainLayoutRoutes />
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path="/setaccount" element={
+                        // アカウント設定が完了していたらホームへ、そうでなければ設定ページを表示
+                        isAccountSetupComplete ? <Navigate to="/" replace /> : <LoginLayout><SetAccount /></LoginLayout>
+                    } />
+                    {/* ログイン済みの場合、/login にアクセスしたらホームにリダイレクト */}
+                    <Route path="/login" element={<Navigate to="/" replace />} />
+                </>
+            ) : (
+                // --- 未ログインユーザー向けのルート ---
+                <>
+                    <Route path="/" element={<LoginLayout><LoginForm /></LoginLayout>} />
+                    {/* 未ログインの場合、保護されたページにアクセスしようとしたらログインページにリダイレクト */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </>
+            )}
+        </Routes>
+    );
+};
+
+// MainLayout内のルートを定義するコンポーネント
+const MainLayoutRoutes = () => (
+    <Routes>
+        <Route path="/" element={<MainLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path="search" element={<SearchPage />} />
+            <Route path="searchresult" element={<SearchResultsPage />} />
+            <Route path="notifications" element={<NotificationPage />} />
+            <Route path="messages" element={<MessagePage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="posts/:postId" element={<PostPage />} />
+            {/* MainLayout内の未定義URLはホームへ */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+    </Routes>
+);

@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { onIdTokenChanged } from 'firebase/auth';
-import { fireAuth } from './firebase';
+import { fireAuth, apiClient } from './firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
+const storage = getStorage();
 export const SetAccount: React.FC = () => {
     // フォームの入力値をstateで管理
     const [name, setName] = useState('');
     const [userId, setUserId] = useState('');
     const [bio, setBio] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [iconUrl, setIconUrl] = useState('');
     const [idToken, setIdToken] = useState<string | null>(null);
-
+    const [iconFile, setIconFile] = useState<File | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onIdTokenChanged(fireAuth, async (user) => {
@@ -34,9 +37,10 @@ export const SetAccount: React.FC = () => {
     }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null); // エラーをリセット
+        setError(null);
+        setIsUploading(true);
 
-        if (!idToken) {
+        if (!idToken || !fireAuth.currentUser) {
             setError("認証トークンが見つかりません。ログイン状態を確認してください。");
             return;
         }
@@ -50,29 +54,33 @@ export const SetAccount: React.FC = () => {
             return;
         }
         try {
-            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${idToken}`,
-                },
-                body: JSON.stringify({
+            let iconUrl = '';
+            if (iconFile) {
+                const storageRef = ref(storage, `usericons/${fireAuth.currentUser.uid}/${iconFile.name}`);
+                await uploadBytes(storageRef, iconFile);
+                iconUrl = await getDownloadURL(storageRef);
+            }
+            await apiClient.post(
+                '/users',
+                {
                     userId: userId,
                     name: name,
                     bio: bio,
                     iconUrl: iconUrl
-                }),
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || 'プロフィールの更新に失敗しました。');
-            }
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             console.log("ようこそ！登録が完了しました。");
             window.location.href = '/';
 
         } catch (err: any) {
             setError(err.message);
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -117,14 +125,14 @@ export const SetAccount: React.FC = () => {
                         accept="image/*"
                         onChange={(e) => {
                             if (e.target.files && e.target.files[0]) {
-                                setIconUrl(URL.createObjectURL(e.target.files[0]));
+                                setIconFile(e.target.files[0]);
                             }
                         }}
                     />
                 </div>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button type="submit">登録してはじめる</button>
+                <button type="submit" disabled={isUploading}>登録してはじめる</button>
             </form>
         </div>
     );
-};//a
+};

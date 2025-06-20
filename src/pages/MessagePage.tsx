@@ -11,7 +11,7 @@ export const messageHeaderButtons: HeaderButtonType[] = [
 export const MessagePage: React.FC = () => {
     return (
         <div>
-            <CustomHeader buttons={messageHeaderButtons} />
+            <CustomHeader $buttons={messageHeaderButtons} />
         </div>
     );
 };

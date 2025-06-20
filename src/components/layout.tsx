@@ -15,14 +15,14 @@ type SideBarButtonType = {
 }
 
 type SideBarProps = {
-    top: string;
-    buttons: SideBarButtonType[];
+    $top: string;
+    $buttons: SideBarButtonType[];
 }
 type HeaderProps = {
-    left?: string;
+    $left?: string;
 }
 type CustomHeaderProps = {
-    buttons: HeaderButtonType[];
+    $buttons: HeaderButtonType[];
 }
 
 
@@ -32,7 +32,7 @@ export const SideBarButton: React.FC<{ buttons: SideBarButtonType[] }> = ({ butt
         <SideBarContainer>
             {buttons.map((button, index) => (
                 <StyledLink to={button.path} key={index}>
-                    <SideBar top={`${index * 120}px`} buttons={[]}>
+                    <SideBar $top={`${index * 120}px`} $buttons={[]}>
                         {button.label}
                     </SideBar>
                 </StyledLink>
@@ -41,10 +41,10 @@ export const SideBarButton: React.FC<{ buttons: SideBarButtonType[] }> = ({ butt
     );
 };
 
-export const CustomHeader: React.FC<CustomHeaderProps> = ({ buttons }) => {
+export const CustomHeader: React.FC<CustomHeaderProps> = ({ $buttons }) => {
     return (
         <HeaderContainer>
-            {buttons.map((button, index) => (
+            {$buttons.map((button, index) => (
                 <HeaderButton
                     key={index}
                     onClick={button.onClick}
@@ -61,7 +61,7 @@ const HeaderButton = styled.button <HeaderProps>`
     position: relative;
     align-items: center; 
     justify-content: center;
-   /*left: ${props => props.left || 'auto'};*/
+   /*left: ${props => props.$left || 'auto'};*/
     height: 70px;
     flex-grow: 1; 
     flex-basis: 0;  
@@ -128,7 +128,7 @@ const SideBar = styled.button <SideBarProps>`
         transform: scale(1.05);
         transition: all 0.2s ease;
     }
-    top: ${props => props.top || '0'};
+    top: ${props => props.$top || '0'};
     left: 100px;
     bottom: 0;
     z-index: 1000;

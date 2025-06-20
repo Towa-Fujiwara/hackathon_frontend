@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CustomHeader, type HeaderButtonType } from '../components/layout';
 import { CreatePostForm, usePosts } from '../components/NewPost';
 import { PostItem } from '../components/PostItem';
+import GeminiSummary from '../components/GeminiSummary';
 import { fireAuth } from '../firebase';
 
 
@@ -17,6 +18,7 @@ export const homeHeaderButtons: HeaderButtonType[] = [
 
 export const HomePage: React.FC = () => {
     const [idToken, setIdToken] = useState<string | null>(null);
+
     useEffect(() => {
         const fetchToken = async () => {
             const user = fireAuth.currentUser;
@@ -46,32 +48,37 @@ export const HomePage: React.FC = () => {
     const { posts, createPost, isLoading, error } = usePosts(idToken);
     return (
         <div>
-            <CustomHeader buttons={homeHeaderButtons} />
+            <CustomHeader $buttons={homeHeaderButtons} />
             <CreatePostForm onSubmit={createPost} idToken={idToken} />
             {isLoading && <div>読み込み中...</div>}
             {error && <div style={{ color: 'red' }}>{error}</div>}
-            {posts.map(post => (
-                <PostItem
-                    key={post.id}
-                    post={{
-                        id: post.id,
-                        userId: post.userId,
-                        text: post.text,
-                        image: post.image,
-                        createdAt: post.createdAt,
-                        likeCount: 0,
-                        commentCount: 0
-                    }}
-                    user={{
-                        name: post.user?.name || 'Unknown User',
-                        userId: post.user?.userId || post.userId,
-                        iconUrl: post.user?.iconUrl || '',
-                        bio: post.user?.bio || '',
-                        firebaseUid: post.user?.firebaseUid || post.userId,
-                        createdAt: post.user?.createdAt || post.createdAt
-                    }}
-                />
-            ))}
+            {posts.map(post => {
+                console.log('HomePage: post:', post);
+                return (
+                    <PostItem
+                        key={post.id}
+                        post={{
+                            id: post.id,
+                            userId: post.userId,
+                            name: post.name,
+                            text: post.text,
+                            image: post.image,
+                            createdAt: post.createdAt,
+                            likeCount: 0,
+                            commentCount: 0
+                        }}
+                        user={{
+                            name: post.name,
+                            userId: post.userId,
+                            iconUrl: post.iconUrl || 'https://via.placeholder.com/48x48/cccccc/ffffff?text=U',
+                            bio: '',
+                            firebaseUid: post.userId,
+                            createdAt: post.createdAt
+                        }}
+                    />
+                );
+            })}
+            <GeminiSummary />
         </div>
     );
 };
