@@ -18,7 +18,7 @@ export const Profiletable: React.FC = () => {
             setUserProfile(user.data);
         };
 
-        // Firebaseなどからユーザーのポスト一覧を取得する非同期処理
+        // Firebaseなどからユーザーのポスト一覧を取得する非同期処理//
         const fetchUserPosts = async () => {
             setIsLoading(true); // 読み込み開始
             setError(null);
