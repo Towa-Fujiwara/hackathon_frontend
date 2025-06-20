@@ -1,3 +1,4 @@
+import React from 'react';
 import './app.css';
 import { SideBarButton, sideBarButtonPath } from './components/layout';
 

@@ -8,6 +8,7 @@ import axios from 'axios';
 export type PostItemData = {
     id: string;
     userId: string;
+    name: string;
     text: string;
     image: string;
     createdAt: string;
@@ -69,7 +70,7 @@ const UserIdAndTimestamp = styled.span`
 `;
 
 const PostText = styled.p`
-    margin: 0;
+    margin: 10px 0 0 60px;
     line-height: 1.4;
     white-space: pre-wrap;
     color: rgb(0,0,0);
@@ -79,6 +80,8 @@ const ProfileIconPlaceholder = styled.div<{ $iconUrl?: string }>`
     width: 48px;
     height: 48px;
     background-image: ${props => (props.$iconUrl ? `url(${props.$iconUrl})` : 'none')};
+    background-size: cover;
+    background-position: center;
     border-radius: 50%;
     background-color: #ccc;
 `;
@@ -118,6 +121,11 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likeCount || 0);
 
+    // postデータを取得した際のログ出力
+    useEffect(() => {
+        console.log('PostItem: postデータを取得しました', post);
+    }, [post]);
+
     const handleLikeClick = async (e: React.MouseEvent) => {
         e.stopPropagation();
 
@@ -137,16 +145,19 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
         }
     };
     const handleNavigate = () => {
+        console.log('PostItem: ナビゲート先のpost.id:', post.id);
+        console.log('PostItem: postオブジェクト全体:', post);
         navigate(`/posts/${post.id}`);
     }
     return (
         <PostItemContainer onClick={handleNavigate}>
-            <PostHeader />
-            <ProfileIconPlaceholder $iconUrl={user.iconUrl} />
-            <AuthorInfo>
-                <DisplayName>{user.name}</DisplayName>
-                <UserIdAndTimestamp>@{user.userId} · {post.createdAt}</UserIdAndTimestamp>
-            </AuthorInfo>
+            <PostHeader>
+                <ProfileIconPlaceholder $iconUrl={user.iconUrl} />
+                <AuthorInfo>
+                    <DisplayName>{user.name}</DisplayName>
+                    <UserIdAndTimestamp>@{user.userId} · {new Date(post.createdAt).toLocaleString()}</UserIdAndTimestamp>
+                </AuthorInfo>
+            </PostHeader>
             <PostText>{post.text}</PostText>
             <PostActionsContainer>
                 <ActionButton onClick={handleLikeClick} $isActive={isLiked} $activeColor="#F91880">

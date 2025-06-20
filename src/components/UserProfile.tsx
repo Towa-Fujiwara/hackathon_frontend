@@ -52,7 +52,7 @@ export const UserId = styled.p`
 export const UserProfileCard: React.FC<UserProfileCardProps> = ({ user }) => {
     return (
         <CardContainer>
-            <ProfileIcon src={user.iconUrl} alt={`${user.name} icon`} />
+            {user.iconUrl && <ProfileIcon src={user.iconUrl} alt={`${user.name} icon`} />}
             <UserName>{user.name}</UserName>
             <UserId>@{user.userId}</UserId>
             <p>{user.bio}</p>

@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '../firebase';
 // 親コンポーネントに渡すデータの型
 export interface PostData {
     id: string;
     userId: string;
+    name: string;
     text: string;
     image: string;
     createdAt: string;
-    user?: {
-        userId: string;
-        firebaseUid: string;
-        name: string;
-        bio: string;
-        iconUrl: string;
-        createdAt: string;
-    };
+    iconUrl?: string;
 }
 
 export const usePosts = (idToken: string | null) => {
@@ -29,14 +23,16 @@ export const usePosts = (idToken: string | null) => {
             setError(null);
             try {
                 // バックエンドの /api/posts エンドポイントにGETリクエストを送信
-                const response = await axios.get("https://hackathon-backend-723035348521.us-central1.run.app/api/posts");
+                const response = await apiClient.get('/posts');
                 // 成功したら、取得した投稿データでstateを更新
+                console.log('NewPost: 取得したresponse.data:', response.data);
+                console.log('NewPost: 最初の投稿の詳細:', response.data[0]);
                 setPosts(response.data || []);
-            } catch (err) {
+            } catch (err: any) {
                 // エラーハンドリング
                 let errorMessage = "投稿の読み込みに失敗しました。";
-                if (axios.isAxiosError(err) && err.response) {
-                    errorMessage = err.response.data.error || errorMessage;
+                if (err.response && err.response.data && err.response.data.error) {
+                    errorMessage = err.response.data.error;
                 }
                 setError(errorMessage);
             } finally {
@@ -58,13 +54,12 @@ export const usePosts = (idToken: string | null) => {
         setError(null);
 
         try {
-            const response = await axios.post(
-                "https://hackathon-backend-723035348521.us-central1.run.app/api/posts",
+            const response = await apiClient.post(
+                '/posts',
                 { text },
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${idToken}`,
                     },
                 }
             );
@@ -74,9 +69,9 @@ export const usePosts = (idToken: string | null) => {
             // 新しい投稿をリストの先頭に追加
             setPosts(prevPosts => [newPost, ...prevPosts]);
 
-        } catch (err) {
+        } catch (err: any) {
             let errorMessage = "不明なエラーが発生しました。";
-            if (axios.isAxiosError(err) && err.response) {
+            if (err.response && err.response.data && err.response.data.error) {
                 errorMessage = err.response.data.error || "投稿に失敗しました。";
             } else if (err instanceof Error) {
                 errorMessage = err.message;
@@ -129,7 +124,7 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, idToke
                 onChange={(e) => setText(e.target.value)}
                 placeholder="いまどうしてる？"
                 rows={4}
-                style={{ width: '100%', resize: 'vertical', border: '1px solid #1DA1F2', borderRadius: '4px', padding: '8px', backgroundColor: '#ffffff', color: 'black' }}
+                style={{ width: '97%', resize: 'vertical', border: '1px solid #1DA1F2', borderRadius: '4px', padding: '8px', backgroundColor: '#ffffff', color: 'black' }}
             />
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <div style={{ textAlign: 'right', marginTop: '8px' }}>

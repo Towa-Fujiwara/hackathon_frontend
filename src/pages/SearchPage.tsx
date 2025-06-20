@@ -15,7 +15,7 @@ export const SearchPage: React.FC = () => {
         <div>
             <MainSearchBar />
             <div style={{ paddingTop: '60px' }}>
-                <CustomHeader buttons={searchHeaderButtons} />
+                <CustomHeader $buttons={searchHeaderButtons} />
             </div>
         </div>
     );

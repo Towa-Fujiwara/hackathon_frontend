@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { onIdTokenChanged } from 'firebase/auth';
-import { fireAuth } from './firebase';
+import { fireAuth, apiClient } from './firebase';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const storage = getStorage();
@@ -60,24 +60,20 @@ export const SetAccount: React.FC = () => {
                 await uploadBytes(storageRef, iconFile);
                 iconUrl = await getDownloadURL(storageRef);
             }
-            const response = await fetch('https://hackathon-backend-723035348521.us-central1.run.app/api/users', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${idToken}`,
-                },
-                body: JSON.stringify({
+            await apiClient.post(
+                '/users',
+                {
                     userId: userId,
                     name: name,
                     bio: bio,
                     iconUrl: iconUrl
-                }),
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || 'プロフィールの更新に失敗しました。');
-            }
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             console.log("ようこそ！登録が完了しました。");
             window.location.href = '/';
 
