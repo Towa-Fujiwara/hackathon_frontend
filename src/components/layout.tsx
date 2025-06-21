@@ -1,6 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
+import { GoHomeFill } from "react-icons/go";
+import { IoSearch, IoNotifications, IoSettingsSharp } from "react-icons/io5";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
+import { VscAccount } from "react-icons/vsc";
 
 export type HeaderButtonType = {
     icon?: React.ReactNode;
@@ -12,6 +16,7 @@ type SideBarButtonType = {
     label: string;
     onClick?: () => void;
     path: string;
+    icon: React.ReactNode;
 }
 
 type SideBarProps = {
@@ -33,7 +38,8 @@ export const SideBarButton: React.FC<{ buttons: SideBarButtonType[] }> = ({ butt
             {buttons.map((button, index) => (
                 <StyledLink to={button.path} key={index}>
                     <SideBar $top={`${index * 120}px`} $buttons={[]}>
-                        {button.label}
+                        <IconWrapper>{button.icon}</IconWrapper>
+                        <Label>{button.label}</Label>
                     </SideBar>
                 </StyledLink>
             ))}
@@ -121,6 +127,10 @@ const SideBar = styled.button <SideBarProps>`
     padding: 10px;
     border: none;
     border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 18px;
     &:hover {
         background-color:rgb(24, 185, 226);
         color: #fff;
@@ -154,15 +164,25 @@ const SideBarContainer = styled.aside`
 `;
 
 export const sideBarButtonPath: SideBarButtonType[] = [
-    { label: "ホーム", path: "/" },
-    { label: "検索", path: "/search" },
-    { label: "通知", path: "/notifications" },
-    { label: "メッセージ", path: "/messages" },
-    { label: "設定", path: "/settings" },
-    { label: "プロフィール", path: "/profile" },
+    { label: "ホーム", path: "/", icon: <GoHomeFill /> },
+    { label: "検索", path: "/search", icon: <IoSearch /> },
+    { label: "通知", path: "/notifications", icon: <IoNotifications /> },
+    { label: "メッセージ", path: "/messages", icon: <BiSolidMessageSquareDetail /> },
+    { label: "設定", path: "/settings", icon: <IoSettingsSharp /> },
+    { label: "プロフィール", path: "/profile", icon: <VscAccount /> },
 ];
 
+const IconWrapper = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+`;
 
+const Label = styled.span`
+    flex-grow: 1;
+    text-align: left;
+`;
 
 const StyledLink = styled(Link)`
     text-decoration: none; /* リンクの下線を消す */

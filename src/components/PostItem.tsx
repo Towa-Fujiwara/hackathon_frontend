@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { type UserProfile } from './UserProfile';
 import { apiClient } from '../firebase';
 import axios from 'axios';
+import { FaRegComment } from "react-icons/fa6";
 
 export type PostItemData = {
     id: string;
@@ -31,10 +32,6 @@ type PostItemProps = {
 
 const HeartIcon: React.FC<{ color?: string; size?: number; }> = ({ color = 'currentColor', size = 18 }) => (
     <svg viewBox="0 0 24 24" width={size} height={size} fill={color}><g><path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.478c0-3.064 2.525-5.754 5.403-5.754 2.29 0 3.83 1.58 4.646 2.73.814-1.148 2.354-2.73 4.645-2.73 2.88 0 5.404 2.69 5.404 5.755 0 6.376-7.454 13.11-10.037 13.157H12z"></path></g></svg>
-);
-
-const ReplyIcon: React.FC<{ size?: number }> = ({ size = 18 }) => (
-    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor"><g><path d="M14.046 2.242l-4.148-.01h-.002c-4.374 0-7.8 3.427-7.8 7.802 0 4.098 3.186 7.206 7.465 7.37v3.828c0 .108.044.286.12.403.142.225.384.36.656.36.272 0 .514-.135.656-.36l6.088-9.85c.143-.23.228-.517.228-.823s-.085-.593-.228-.823l-6.088-9.85c-.142-.225-.384-.36-.656-.36-.272 0-.514.135-.656-.36z"></path></g></svg>
 );
 
 const PostItemContainer = styled.div`
@@ -184,7 +181,7 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
                     {likeCount > 0 && <ActionCount>{likeCount}</ActionCount>}
                 </ActionButton>
                 <ActionButton onClick={handleNavigate} $activeColor="#1D9BF0">
-                    <ReplyIcon />
+                    <FaRegComment size={18} />
                 </ActionButton>
             </PostActionsContainer>
         </PostItemContainer>
@@ -238,12 +235,6 @@ export const useComments = (postId: string, idToken: string | null) => {
             const response = await apiClient.post(
                 `/posts/${postId}/comments`,
                 { text },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${idToken}`,
-                    },
-                }
             );
 
             const newComment: CommentData = response.data;

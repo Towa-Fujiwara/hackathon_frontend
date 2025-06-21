@@ -60,6 +60,7 @@ export const AuthChecker: React.FC = () => {
                     } else {
                         // その他の予期せぬエラー
                         console.error("アカウント設定の確認エラー:", error);
+                        // エラーをログに出力するが、画面には表示しない
                         setIsAccountSetupComplete(false);
                     }
                 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { IoMdSearch } from "react-icons/io";
 
 const SearchBarContainer = styled.form`
     position: fixed; // fixedに変更
@@ -75,6 +76,16 @@ export const UserProfileItem = styled.div`
     }
 `;
 
+const IconWrapper = styled.div`
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0; 
+    min-width: 45px; 
+    height: 45px; 
+    color: white; 
+`;
+
 interface MainSearchBarProps {
     onSearch?: (query: string) => Promise<void>;
 }
@@ -102,10 +113,12 @@ export const MainSearchBar: React.FC<MainSearchBarProps> = ({ onSearch }) => {
                     type="text"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="キーワードで検索"
+                    placeholder="ユーザーを検索"
                 />
-                <SearchButton type="submit" onSubmit={handleSubmit}>
-                    🔍
+                <SearchButton type="submit">
+                    <IconWrapper>
+                        <IoMdSearch size={30} />
+                    </IconWrapper>
                 </SearchButton>
             </SearchBarContainer>
         </>
