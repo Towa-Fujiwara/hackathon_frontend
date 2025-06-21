@@ -163,6 +163,7 @@ const SideBarContainer = styled.aside`
     z-index: 1000;
 `;
 
+
 export const sideBarButtonPath: SideBarButtonType[] = [
     { label: "ホーム", path: "/", icon: <GoHomeFill /> },
     { label: "検索", path: "/search", icon: <IoSearch /> },

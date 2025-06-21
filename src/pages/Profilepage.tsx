@@ -69,7 +69,13 @@ export const Profiletable: React.FC<{ userProfile: UserProfile }> = ({ userProfi
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {userPosts.length > 0 ? (
                 userPosts.map(post => (
-                    <PostItem key={post.id} post={post} user={userProfile} />
+                    <PostItem
+                        key={post.id}
+                        post={post}
+                        user={userProfile}
+                        showDeleteButton={true}
+                        onDeleteSuccess={(deletedId) => setUserPosts(posts => posts.filter(p => p.id !== deletedId))}
+                    />
                 ))
             ) : (
                 // エラーがない場合のみ「まだ投稿がありません」と表示
@@ -99,7 +105,6 @@ export const ProfilePage: React.FC = () => {
             try {
                 const user = await apiClient.get<UserProfile>("/users/me");
                 setUserProfile(user.data);
-                // ★ 追加: ここでuserProfile.userIdのログを出力
                 console.log("ProfilePage: 取得したuserProfile.userId:", user.data.userId);
             } catch (err) {
                 console.error("ユーザープロフィールの取得に失敗しました:", err);
@@ -123,8 +128,7 @@ export const ProfilePage: React.FC = () => {
     }
     return (
         <div>
-            <Profiletable userProfile={userProfile} />
-            {/* ★ 修正: GeminiSummary に userProfile.userId を渡す */}
+            <Profiletable userProfile={userProfile}></Profiletable>
             <GeminiSummary userId={userProfile.userId} />
         </div>
     );

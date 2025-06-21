@@ -28,6 +28,8 @@ export type CommentData = {
 type PostItemProps = {
     post: PostItemData;
     user: UserProfile;
+    showDeleteButton?: boolean;
+    onDeleteSuccess?: (postId: string) => void;
 };
 
 const HeartIcon: React.FC<{ color?: string; size?: number; }> = ({ color = 'currentColor', size = 18 }) => (
@@ -42,12 +44,13 @@ const PostItemContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 870px;
+    border-radius: 8px;
 `;
 
 const PostHeader = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 `;
 
 const AuthorInfo = styled.div`
@@ -113,7 +116,19 @@ const ActionCount = styled.span`
     margin-left: 6px;
 `;
 
-export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
+const DeleteButton = styled.button`
+    border-radius: 12px;
+    height: 10px
+    border: none;
+    background-color:rgb(236, 26, 26);
+    color: white;
+    cursor: pointer;
+    &:disabled {
+        background-color: #ccc;
+    }
+`;
+
+export const PostItem: React.FC<PostItemProps> = ({ post, user, showDeleteButton = false, onDeleteSuccess }) => {
     const navigate = useNavigate();
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likeCount || 0);
@@ -146,6 +161,16 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
         console.log('PostItem: postオブジェクト全体:', post);
         navigate(`/posts/${post.id}`);
     }
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!window.confirm('削除しますか？')) return;
+        try {
+            await apiClient.delete(`/posts/${post.id}`);
+            if (onDeleteSuccess) onDeleteSuccess(post.id);
+        } catch (err) {
+            alert('削除に失敗しました');
+        }
+    };
     return (
         <PostItemContainer>
             <PostHeader>
@@ -183,6 +208,9 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
                 <ActionButton onClick={handleNavigate} $activeColor="#1D9BF0">
                     <FaRegComment size={18} />
                 </ActionButton>
+                {showDeleteButton && (
+                    <DeleteButton onClick={handleDelete}>削除</DeleteButton>
+                )}
             </PostActionsContainer>
         </PostItemContainer>
     );

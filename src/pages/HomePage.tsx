@@ -6,10 +6,10 @@ import { fireAuth, apiClient } from '../firebase';
 import { MainSearchBar, SearchResultsContainer, UserProfileItem } from '../components/SearchBar';
 import { type UserProfile } from '../components/UserProfile';
 import { Link } from 'react-router-dom'
+import '../app.css';
 
 
 export const homeHeaderButtons: HeaderButtonType[] = [
-    { label: "おすすめ", onClick: () => console.log("Header Button h1"), topOffset: "0px" },
     { label: "最新", onClick: () => console.log("Header Button h2"), topOffset: "0px" },
     { label: "フォロー中", onClick: () => console.log("Header Button h3"), topOffset: "0px" },
 ];

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { UserProfileCard, type UserProfile } from '../components/UserProfile';
+import { useParams, useNavigate } from 'react-router-dom';
+import { type UserProfile } from '../components/UserProfile';
 import { PostItem, type PostItemData } from '../components/PostItem';
-import { apiClient } from '../firebase';
+import { apiClient, fireAuth } from '../firebase';
 import axios from 'axios';
 import GeminiSummary from '../components/GeminiSummary';
 import { CustomHeader, type HeaderButtonType } from '../components/layout';
+import { OtherUserProfileCard } from '../components/OtherUserProfile';
 
 export const otherProfileHeaderButtons: HeaderButtonType[] = [
     { label: "ポスト", onClick: () => console.log("Other Profile Header Button p1"), topOffset: "0px" },
@@ -14,6 +15,7 @@ export const otherProfileHeaderButtons: HeaderButtonType[] = [
 
 export const OtherUserProfilePage: React.FC = () => {
     const { userId } = useParams<{ userId: string }>();
+    const navigate = useNavigate();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [userPosts, setUserPosts] = useState<PostItemData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +34,14 @@ export const OtherUserProfilePage: React.FC = () => {
             try {
                 // ユーザープロフィールを取得
                 const userRes = await apiClient.get<UserProfile>(`/users/id/${userId}`);
+
+                // 取得したプロフィールがログインユーザーのものか確認
+                const currentUser = fireAuth.currentUser;
+                if (currentUser && currentUser.uid === userRes.data.firebaseUid) {
+                    navigate('/profile', { replace: true });
+                    return; // リダイレクトする場合は以降の処理を中断
+                }
+
                 setUserProfile(userRes.data);
 
                 // ユーザーの投稿を取得
@@ -55,7 +65,7 @@ export const OtherUserProfilePage: React.FC = () => {
         };
 
         fetchData();
-    }, [userId]);
+    }, [userId, navigate]);
 
     if (isLoading) {
         return <div>読み込み中...</div>;
@@ -71,7 +81,7 @@ export const OtherUserProfilePage: React.FC = () => {
 
     return (
         <div>
-            <UserProfileCard user={userProfile} />
+            <OtherUserProfileCard user={userProfile} />
             <CustomHeader $buttons={otherProfileHeaderButtons} />
             {userPosts.length > 0 ? (
                 userPosts.map(post => (
