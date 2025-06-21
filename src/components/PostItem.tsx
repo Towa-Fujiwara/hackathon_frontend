@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { type UserProfile } from './UserProfile';
 import { apiClient } from '../firebase';
@@ -150,12 +150,31 @@ export const PostItem: React.FC<PostItemProps> = ({ post, user }) => {
         navigate(`/posts/${post.id}`);
     }
     return (
-        <PostItemContainer onClick={handleNavigate}>
+        <PostItemContainer>
             <PostHeader>
-                <ProfileIconPlaceholder $iconUrl={user.iconUrl} />
+                <Link
+                    to={`/profile/${user.userId}`}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('ProfileIcon clicked, navigating to:', `/profile/${user.userId}`);
+                        console.log('user.userId:', user.userId);
+                    }}
+                >
+                    <ProfileIconPlaceholder $iconUrl={user.iconUrl} />
+                </Link>
                 <AuthorInfo>
-                    <DisplayName>{user.name}</DisplayName>
-                    <UserIdAndTimestamp>@{user.userId} · {new Date(post.createdAt).toLocaleString()}</UserIdAndTimestamp>
+                    <Link
+                        to={`/profile/${user.userId}`}
+                        style={{ textDecoration: 'none', color: 'inherit' }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            console.log('AuthorInfo clicked, navigating to:', `/profile/${user.userId}`);
+                            console.log('user.userId:', user.userId);
+                        }}
+                    >
+                        <DisplayName>{user.name}</DisplayName>
+                        <UserIdAndTimestamp>@{user.userId} · {new Date(post.createdAt).toLocaleString()}</UserIdAndTimestamp>
+                    </Link>
                 </AuthorInfo>
             </PostHeader>
             <PostText>{post.text}</PostText>

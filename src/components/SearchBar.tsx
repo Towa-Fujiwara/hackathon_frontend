@@ -3,19 +3,19 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBarContainer = styled.form`
-    position: absolute;
-    top: 0px;
-    left: 270px; /* サイドバーがある場合はその幅を考慮する必要があるかもしれません */
-    right: 0;
-    height: 60px; /* 検索バーの高さ */
-    width: 860px;
-    background-color: #f0f0f0; /* 例としての背景色 */
+    position: fixed; // fixedに変更
+    top: 0px; // ページトップに配置
+    right: 0px; // 右端に配置
+    width: 270px; // サイドバーと同じ幅に設定
+    height: 60px;
+    background-color: #f0f0f0;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 10px; // パディングを調整
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 1001; /* ヘッダーより手前に来るように */
+    z-index: 1001;
 `;
+
 
 const SearchInput = styled.input`
     flex-grow: 1;
@@ -45,17 +45,18 @@ const SearchButton = styled.button`
 `;
 
 export const SearchResultsContainer = styled.div`
-    position: absolute;
-    top: 70px; /* 検索バーの下に配置 */
-    left: 290px;
-    width: 820px;
+    position: absolute; 
+    top: 70px; 
+    left: 0;
+    width: 100%; 
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     padding: 15px;
-    z-index: 1000;
+    z-index: 999; 
     max-height: 400px;
     overflow-y: auto;
+    color: #333;
 `;
 
 export const UserProfileItem = styled.div`
@@ -64,9 +65,21 @@ export const UserProfileItem = styled.div`
     &:last-child {
         border-bottom: none;
     }
+    a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+    &:hover {
+        background-color: #f0f0f0;
+    }
 `;
 
-export const MainSearchBar: React.FC = () => {
+interface MainSearchBarProps {
+    onSearch?: (query: string) => Promise<void>;
+}
+
+export const MainSearchBar: React.FC<MainSearchBarProps> = ({ onSearch }) => {
     const [query, setQuery] = useState('');
 
     const navigate = useNavigate();
@@ -75,7 +88,11 @@ export const MainSearchBar: React.FC = () => {
         if (!query.trim()) {
             return;
         }
-        navigate(`/searchresult?q=${encodeURIComponent(query)}`);
+        if (onSearch) {
+            await onSearch(query);
+        } else {
+            navigate(`/searchresult?q=${encodeURIComponent(query)}`);
+        }
     };
 
     return (
@@ -88,6 +105,7 @@ export const MainSearchBar: React.FC = () => {
                     placeholder="キーワードで検索"
                 />
                 <SearchButton type="submit" onSubmit={handleSubmit}>
+                    🔍
                 </SearchButton>
             </SearchBarContainer>
         </>

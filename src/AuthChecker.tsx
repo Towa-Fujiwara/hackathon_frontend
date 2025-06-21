@@ -15,6 +15,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { SearchResultsPage } from './pages/SearchResultPage';
 import { MainLayout } from './app';
 import { PostPage } from './pages/PostPage';
+import { OtherUserProfilePage } from './pages/OtherUserProfilePage';
 import './app.css';
 import axios from 'axios';
 //
@@ -117,7 +118,7 @@ const MainLayoutRoutes = () => (
             <Route path="messages" element={<MessagePage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
-            <Route path="profile" element={<ProfilePage />} />
+            <Route path="profile/:userId" element={<OtherUserProfilePage />} />
             <Route path="posts/:postId" element={<PostPage />} />
             {/* MainLayout内の未定義URLはホームへ */}
             <Route path="*" element={<Navigate to="/" replace />} />

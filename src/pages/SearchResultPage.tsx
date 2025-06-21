@@ -10,7 +10,7 @@ const SearchResultsContainer = styled.div`
     left: 290px;
     width: 820px;
     background-color: white;
-    color: rgba(0,0,0,0);
+    color: rgba(63, 45, 45, 90);
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     padding: 15px;

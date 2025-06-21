@@ -6,57 +6,6 @@ import axios from 'axios';
 import { apiClient } from '../firebase';
 import GeminiSummary from '../components/GeminiSummary';
 
-/*export const Profiletable: React.FC<{ userProfile: UserProfile }> = ({ userProfile }) => {
-    const [userPosts, setUserPosts] = useState<PostItemData[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-
-        // Firebaseなどからユーザーのポスト一覧を取得する非同期処理//
-        const fetchUserPosts = async () => {
-            setIsLoading(true); // 読み込み開始
-            setError(null);
-            try {
-                // バックエンドの /api/posts エンドポイントにGETリクエストを送信
-                const response = await apiClient.get("/posts/me");
-                // 成功したら、取得した投稿データでstateを更新
-                console.log('Profilepage: 取得した投稿データ:', response.data);
-                setUserPosts(response.data || []);
-            } catch (err) {
-                // エラーハンドリング
-                let errorMessage = "投稿の読み込みに失敗しました。";
-                if (axios.isAxiosError(err) && err.response) {
-                    errorMessage = err.response.data.error || errorMessage;
-                }
-                setError(errorMessage);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchUserPosts();
-    }, []);
-
-    if (isLoading) {
-        return <div>読み込み中...</div>;
-    }
-
-    return (
-        <div>
-            <UserProfileCard user={userProfile} />
-            <CustomHeader $buttons={profileHeaderButtons} />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {userPosts.length > 0 ? (
-                userPosts.map(post => (
-                    <PostItem key={post.id} post={post} user={userProfile} />
-                ))
-            ) : (
-                <p>まだ投稿がありません。</p>
-            )}
-        </div>
-    );
-};*/
-
 export const Profiletable: React.FC<{ userProfile: UserProfile }> = ({ userProfile }) => {
     const [userPosts, setUserPosts] = useState<PostItemData[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -124,7 +73,7 @@ export const Profiletable: React.FC<{ userProfile: UserProfile }> = ({ userProfi
                 ))
             ) : (
                 // エラーがない場合のみ「まだ投稿がありません」と表示
-                !error && <p>あ</p>
+                !error && <p>まだ投稿がありません</p>
             )}
         </div>
     );
