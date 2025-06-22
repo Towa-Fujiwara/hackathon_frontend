@@ -82,7 +82,7 @@ export const Profiletable: React.FC<{ userProfile: UserProfile }> = ({ userProfi
                 ))
             ) : (
                 // エラーがない場合のみ「まだ投稿がありません」と表示
-                !error && <p color='black'>まだ投稿がありません</p>
+                !error && <p>まだ投稿がありません</p>
             )}
         </div>
     );

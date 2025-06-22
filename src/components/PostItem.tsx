@@ -80,11 +80,11 @@ const PostText = styled.p`
 const ProfileIconPlaceholder = styled.div<{ $iconUrl?: string }>`
     width: 48px;
     height: 48px;
-    background-image: ${props => (props.$iconUrl ? `url(${props.$iconUrl})` : 'none')};
+    background-image: ${props => (props.$iconUrl ? `url(${props.$iconUrl})` : 'url(https://cdn-icons-png.flaticon.com/512/1077/1077114.png)')};
     background-size: cover;
     background-position: center;
     border-radius: 50%;
-    background-color: #ccc;
+    background-color: #ffffff;
 `;
 
 const PostActionsContainer = styled.div`
@@ -119,9 +119,9 @@ const ActionCount = styled.span`
 
 const DeleteButton = styled.button`
     border-radius: 12px;
-    height: 10px
+    height: 5px
     border: none;
-    background-color:rgb(236, 26, 26);
+    background-color:rgb(221, 68, 68);
     color: white;
     cursor: pointer;
     &:disabled {

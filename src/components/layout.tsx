@@ -104,7 +104,7 @@ const HeaderButton = styled.button <HeaderProps>`
 const HeaderContainer = styled.header`
     position: relative; 
     width: 860px;  
-    height: 75px;  
+    height: 75px;
     display: flex;
     flex-direction: row;  
     justify-content: center;  

@@ -2,6 +2,7 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { fireAuth, apiClient } from "./firebase";
 import { LoginButton } from "./components/loginlayout";
 import { FcGoogle } from "react-icons/fc";
+import reactLogo from './assets/react.svg';
 
 export const LoginForm: React.FC = () => {
     /**
@@ -41,8 +42,21 @@ export const LoginForm: React.FC = () => {
 
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
-            <LoginButton onClick={signInWithGoogle} label="Googleでログイン" icon={FcGoogle} />
-        </div>
+        <>
+            <div style={{ position: 'relative', top: '0px', left: '0px', zIndex: 100 }}> {/* */}
+                <img
+                    src={reactLogo}
+                    className="logo react"
+                    alt="React logo"
+                    style={{
+                        width: '400px',
+                        height: '240px'
+                    }}
+                />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                <LoginButton onClick={signInWithGoogle} label="Googleでログイン" icon={<FcGoogle size={24} />} />
+            </div>
+        </>
     );
 };
