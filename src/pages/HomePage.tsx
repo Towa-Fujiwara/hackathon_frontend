@@ -137,7 +137,7 @@ export const HomePage: React.FC = () => {
                         user={{
                             name: post.name,
                             userId: post.userId,
-                            iconUrl: post.iconUrl || 'https://via.placeholder.com/48x48/cccccc/ffffff?text=U',
+                            iconUrl: post.iconUrl || 'https://cdn-icons-png.flaticon.com/512/1077/1077114.png',
                             bio: '',
                             firebaseUid: post.userId,
                             createdAt: post.createdAt

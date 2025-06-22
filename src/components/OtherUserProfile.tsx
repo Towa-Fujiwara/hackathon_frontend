@@ -111,7 +111,7 @@ export const OtherUserProfileCard: React.FC<OtherUserProfileCardProps> = ({ user
 
     return (
         <CardContainer>
-            <ProfileIcon src={user.iconUrl} alt={`${user.name}のアイコン`} />
+            <ProfileIcon src={user.iconUrl || 'https://cdn-icons-png.flaticon.com/512/1077/1077114.png'} />
             <UserName>{user.name}</UserName>
             <UserId>@{user.userId}</UserId>
             <p>{user.bio}</p>
