@@ -1,4 +1,4 @@
-import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { fireAuth, apiClient } from "./firebase";
 import { LoginButton } from "./components/loginlayout";
 import { FcGoogle } from "react-icons/fc";
@@ -24,7 +24,7 @@ export const LoginForm: React.FC = () => {
                 '/auth/google/callback',
                 { token: idToken },
                 { headers: { 'Content-Type': 'application/json' } }
-            );
+            )
             const { appToken } = response.data;
             localStorage.setItem('appToken', appToken);
             console.log('ログイン成功！');
@@ -39,21 +39,10 @@ export const LoginForm: React.FC = () => {
         }
     };
 
-    /**
-     * ログアウトする
-     */
-    const signOutWithGoogle = (): void => {
-        signOut(fireAuth).then(() => {
-            alert("ログアウトしました");
-        }).catch(err => {
-            alert(err);
-        });
-    };
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
             <LoginButton onClick={signInWithGoogle} label="Googleでログイン" icon={FcGoogle} />
-            <LoginButton onClick={signOutWithGoogle} label="ログアウト" icon={FcGoogle} />
         </div>
     );
 };

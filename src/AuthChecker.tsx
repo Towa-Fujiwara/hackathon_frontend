@@ -7,9 +7,7 @@ import { LoginLayout } from './components/loginlayout';
 import { LoginForm } from './LoginForm';
 import { SetAccount } from './SetAccount';
 import { HomePage } from './pages/HomePage';
-import { SearchPage } from './pages/SearchPage';
-import { NotificationPage } from './pages/NotificationPage';
-import { MessagePage } from './pages/MessagePage';
+import { FollowPosts } from './pages/FollowPosts';
 import { ProfilePage } from './pages/Profilepage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SearchResultsPage } from './pages/SearchResultPage';
@@ -19,6 +17,7 @@ import { OtherUserProfilePage } from './pages/OtherUserProfilePage';
 import './app.css';
 import axios from 'axios';
 //
+
 const LoadingScreen = () => (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="p-4 rounded-md shadow-lg bg-white">
@@ -113,15 +112,12 @@ const MainLayoutRoutes = () => (
     <Routes>
         <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
-            <Route path="search" element={<SearchPage />} />
+            <Route path="following" element={<FollowPosts />} />
             <Route path="searchresult" element={<SearchResultsPage />} />
-            <Route path="notifications" element={<NotificationPage />} />
-            <Route path="messages" element={<MessagePage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="profile/:userId" element={<OtherUserProfilePage />} />
             <Route path="posts/:postId" element={<PostPage />} />
-            {/* MainLayout内の未定義URLはホームへ */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
     </Routes>

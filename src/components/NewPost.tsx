@@ -9,6 +9,8 @@ export interface PostData {
     image: string;
     createdAt: string;
     iconUrl?: string;
+    likeCount?: number;
+    commentCount?: number;
 }
 
 export const usePosts = (idToken: string | null) => {
@@ -86,6 +88,81 @@ export const usePosts = (idToken: string | null) => {
     return { posts, createPost, isLoading, error };
 };
 
+export const useFollowPosts = (idToken: string | null) => {
+    // 投稿リストの状態管理
+    const [posts, setPosts] = useState<PostData[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            setIsLoading(true); // 読み込み開始
+            setError(null);
+            try {
+                // バックエンドの /api/posts エンドポイントにGETリクエストを送信
+                const response = await apiClient.get('/posts/following');
+                // 成功したら、取得した投稿データでstateを更新
+                console.log('NewPost: 取得したresponse.data:', response.data);
+                console.log('NewPost: 最初の投稿の詳細:', response.data[0]);
+                setPosts(response.data || []);
+            } catch (err: any) {
+                // エラーハンドリング
+                let errorMessage = "投稿の読み込みに失敗しました。";
+                if (err.response && err.response.data && err.response.data.error) {
+                    errorMessage = err.response.data.error;
+                }
+                setError(errorMessage);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchPosts();
+    }, []);
+
+    const createFollowPost = async (text: string): Promise<void> => {
+        if (!idToken) {
+            const errorMessage = "投稿するにはログインが必要です。";
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const response = await apiClient.post(
+                '/posts',
+                { text },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const newPost: PostData = response.data;
+
+            // 新しい投稿をリストの先頭に追加
+            setPosts(prevPosts => [newPost, ...prevPosts]);
+
+        } catch (err: any) {
+            let errorMessage = "不明なエラーが発生しました。";
+            if (err.response && err.response.data && err.response.data.error) {
+                errorMessage = err.response.data.error || "投稿に失敗しました。";
+            } else if (err instanceof Error) {
+                errorMessage = err.message;
+            }
+            setError(errorMessage);
+            throw new Error(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { posts, createFollowPost, isLoading, error };
+};
+
 interface CreatePostFormProps {
     onSubmit: (text: string) => Promise<void>;
     idToken: string | null;
@@ -124,7 +201,7 @@ export const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit, idToke
                 onChange={(e) => setText(e.target.value)}
                 placeholder="いまどうしてる？"
                 rows={4}
-                style={{ width: '97%', resize: 'vertical', border: '1px solid #1DA1F2', borderRadius: '4px', padding: '8px', backgroundColor: '#ffffff', color: 'black' }}
+                style={{ width: '97%', resize: 'none', border: '1px solid #1DA1F2', borderRadius: '4px', padding: '8px', backgroundColor: '#ffffff', color: 'black' }}
             />
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <div style={{ textAlign: 'right', marginTop: '8px' }}>

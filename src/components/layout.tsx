@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
 import { GoHomeFill } from "react-icons/go";
-import { IoSearch, IoNotifications, IoSettingsSharp } from "react-icons/io5";
-import { BiSolidMessageSquareDetail } from "react-icons/bi";
+import { IoSettingsSharp } from "react-icons/io5";
 import { VscAccount } from "react-icons/vsc";
 
 export type HeaderButtonType = {
@@ -120,13 +119,13 @@ const HeaderContainer = styled.header`
 
 //サイドバー
 const SideBar = styled.button <SideBarProps>`
-    height: 75px;
-    width: 180px;
+    height: 60px;
+    width: 240px;
     background-color:rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     padding: 10px;
     border: none;
-    border-radius: 20px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     gap: 15px;
@@ -166,9 +165,6 @@ const SideBarContainer = styled.aside`
 
 export const sideBarButtonPath: SideBarButtonType[] = [
     { label: "ホーム", path: "/", icon: <GoHomeFill /> },
-    { label: "検索", path: "/search", icon: <IoSearch /> },
-    { label: "通知", path: "/notifications", icon: <IoNotifications /> },
-    { label: "メッセージ", path: "/messages", icon: <BiSolidMessageSquareDetail /> },
     { label: "設定", path: "/settings", icon: <IoSettingsSharp /> },
     { label: "プロフィール", path: "/profile", icon: <VscAccount /> },
 ];

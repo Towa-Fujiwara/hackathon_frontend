@@ -7,6 +7,7 @@ const SearchBarContainer = styled.form`
     position: fixed; // fixedに変更
     top: 0px; // ページトップに配置
     right: 0px; // 右端に配置
+    border-radius: 8px;
     width: 270px; // サイドバーと同じ幅に設定
     height: 60px;
     background-color: #f0f0f0;

@@ -6,6 +6,9 @@ import axios from 'axios';
 import { apiClient } from '../firebase';
 import GeminiSummary from '../components/GeminiSummary';
 
+// フォロー・フォロワー表示用のスタイルコンポーネント
+
+
 export const Profiletable: React.FC<{ userProfile: UserProfile }> = ({ userProfile }) => {
     const [userPosts, setUserPosts] = useState<PostItemData[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -79,24 +82,20 @@ export const Profiletable: React.FC<{ userProfile: UserProfile }> = ({ userProfi
                 ))
             ) : (
                 // エラーがない場合のみ「まだ投稿がありません」と表示
-                !error && <p>まだ投稿がありません</p>
+                !error && <p color='black'>まだ投稿がありません</p>
             )}
         </div>
     );
 };
 
-
-
 export const profileHeaderButtons: HeaderButtonType[] = [
     { label: "ポスト", onClick: () => console.log("Header Button p1"), topOffset: "0px" },
-    { label: "返信", onClick: () => console.log("Header Button p2"), topOffset: "0px" },
-    { label: "いいね", onClick: () => console.log("Header Button p3"), topOffset: "0px" },
 ];
+
 export const ProfilePage: React.FC = () => {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [isLoadingProfile, setIsLoadingProfile] = useState(true);
     const [profileError, setProfileError] = useState<string | null>(null);
-
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -113,8 +112,10 @@ export const ProfilePage: React.FC = () => {
                 setIsLoadingProfile(false);
             }
         };
+
         fetchProfile();
     }, []);
+
     if (isLoadingProfile) {
         return <div>プロフィールを読み込み中...</div>;
     }
@@ -126,6 +127,7 @@ export const ProfilePage: React.FC = () => {
     if (!userProfile) {
         return <div>プロフィール情報が見つかりませんでした。</div>;
     }
+
     return (
         <div>
             <Profiletable userProfile={userProfile}></Profiletable>

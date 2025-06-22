@@ -19,7 +19,7 @@ interface ProfileUpdateFormProps {
 const FormContainer = styled.form`
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    gap: 5px;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -28,6 +28,7 @@ const FormContainer = styled.form`
     color: #000000;
     justify-content: space-between;
     align-items: flex-start;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
 const FormFields = styled.div`
@@ -60,6 +61,7 @@ const TextArea = styled.textarea`
     min-height: 80px;
     background-color: #ffffff;
     color: #000000;
+    resize: none;
 `;
 
 const Button = styled.button`
@@ -133,7 +135,11 @@ export const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({ userProfil
                     プロフィールを編集
                 </h2>
                 <div>
-                    <label htmlFor="name">名前</label>
+                    <label htmlFor="name">
+                        <h4>
+                            名前
+                        </h4>
+                    </label>
                     <Input
                         id="name"
                         type="text"
@@ -143,7 +149,11 @@ export const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({ userProfil
                     />
                 </div>
                 <div>
-                    <label htmlFor="bio">自己紹介</label>
+                    <label htmlFor="bio">
+                        <h4>
+                            自己紹介
+                        </h4>
+                    </label>
                     <TextArea
                         id="bio"
                         value={bio}
@@ -151,7 +161,11 @@ export const ProfileUpdateForm: React.FC<ProfileUpdateFormProps> = ({ userProfil
                     />
                 </div>
                 <div>
-                    <label htmlFor="icon">アイコン画像</label>
+                    <label htmlFor="icon">
+                        <h4>
+                            アイコン画像
+                        </h4>
+                    </label>
                     <Input
                         id="icon"
                         type="file"

@@ -4,9 +4,11 @@ import { fireAuth } from '../firebase';
 import { apiClient } from '../firebase';
 
 interface SummaryData {
-    summary: string;
     userId: string;
-    createdAt: string;
+    userName: string;
+    summary: string;
+    interests: string[];
+    personality: string;
 }
 
 interface GeminiSummaryProps {
@@ -83,7 +85,7 @@ const GeminiSummary: React.FC<GeminiSummaryProps> = ({ userId }) => {
     if (isLoading) {
         return (
             <SummaryContainer>
-                <SummaryHeader>Gemini要約</SummaryHeader>
+                <SummaryHeader>Geminiによる投稿の要約</SummaryHeader>
                 <LoadingMessage>要約を生成中...</LoadingMessage>
             </SummaryContainer>
         );
@@ -92,7 +94,7 @@ const GeminiSummary: React.FC<GeminiSummaryProps> = ({ userId }) => {
     if (error) {
         return (
             <SummaryContainer>
-                <SummaryHeader>Gemini要約</SummaryHeader>
+                <SummaryHeader>Geminiによる投稿の要約</SummaryHeader>
                 <ErrorMessage>エラー: {error}</ErrorMessage>
                 <RegenerateButton onClick={generateSummary} disabled={isLoading}>
                     {isLoading ? '生成中...' : '再試行'}
@@ -104,7 +106,7 @@ const GeminiSummary: React.FC<GeminiSummaryProps> = ({ userId }) => {
     if (!summary) {
         return (
             <SummaryContainer>
-                <SummaryHeader>Gemini要約</SummaryHeader>
+                <SummaryHeader>Geminiによる投稿の要約</SummaryHeader>
                 <NoDataMessage>要約データがありません</NoDataMessage>
                 <RegenerateButton onClick={generateSummary} disabled={isLoading}>
                     {isLoading ? '生成中...' : '生成する'}
@@ -115,11 +117,27 @@ const GeminiSummary: React.FC<GeminiSummaryProps> = ({ userId }) => {
 
     return (
         <SummaryContainer>
-            <SummaryHeader>Gemini要約</SummaryHeader>
+            <SummaryHeader>Geminiによる投稿の要約</SummaryHeader>
             <SummaryContent>
                 <SummaryText>{summary.summary}</SummaryText>
+                {summary.interests && summary.interests.length > 0 && (
+                    <InterestsSection>
+                        <InterestsTitle>興味・関心</InterestsTitle>
+                        <InterestsList>
+                            {summary.interests.map((interest, index) => (
+                                <InterestItem key={index}>{interest}</InterestItem>
+                            ))}
+                        </InterestsList>
+                    </InterestsSection>
+                )}
+                {summary.personality && (
+                    <PersonalitySection>
+                        <PersonalityTitle>性格・特徴</PersonalityTitle>
+                        <PersonalityText>{summary.personality}</PersonalityText>
+                    </PersonalitySection>
+                )}
                 <SummaryMeta>
-                    <span>生成日時: {new Date(summary.createdAt).toLocaleString('ja-JP')}</span>
+                    <span>生成日時: {new Date().toLocaleString('ja-JP')}</span>
                 </SummaryMeta>
             </SummaryContent>
             <RegenerateButton onClick={generateSummary} disabled={isLoading}>
@@ -131,16 +149,16 @@ const GeminiSummary: React.FC<GeminiSummaryProps> = ({ userId }) => {
 
 const SummaryContainer = styled.div`
   position: fixed;
-  top: 5px;
+  top: 0px;
   right: 0px;
-  width: 270px;
+  width: 260px;
   max-height: calc(100vh - 120px);
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 20px;
   overflow-y: auto;
-  z-index: 100;
+  z-index: 1001;
 `;
 
 const SummaryHeader = styled.h3`
@@ -215,6 +233,47 @@ const RegenerateButton = styled.button`
     background-color: #ccc;
     cursor: not-allowed;
   }
+`;
+
+const InterestsSection = styled.div`
+  margin-top: 10px;
+`;
+
+const InterestsTitle = styled.h4`
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const InterestsList = styled.ul`
+  list-style: none;
+  padding: 0;
+`;
+
+const InterestItem = styled.li`
+  margin-bottom: 5px;
+  color: #555;
+  font-size: 14px;
+`;
+
+const PersonalitySection = styled.div`
+  margin-top: 10px;
+`;
+
+const PersonalityTitle = styled.h4`
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+`;
+
+const PersonalityText = styled.p`
+  margin: 0;
+  line-height: 1.6;
+  color: #555;
+  font-size: 14px;
+  text-align: justify;
 `;
 
 export default GeminiSummary;

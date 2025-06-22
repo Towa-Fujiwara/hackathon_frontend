@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CustomHeader, type HeaderButtonType } from '../components/layout';
-import { CreatePostForm, usePosts } from '../components/NewPost';
+import { CreatePostForm, useFollowPosts } from '../components/NewPost';
 import { PostItem } from '../components/PostItem';
 import { fireAuth, apiClient } from '../firebase';
 import { MainSearchBar, SearchResultsContainer, UserProfileItem } from '../components/SearchBar';
@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import '../app.css';
 
 
-export const HomePage: React.FC = () => {
+export const FollowPosts: React.FC = () => {
     const navigate = useNavigate();
     const [idToken, setIdToken] = useState<string | null>(null);
     const [searchResults, setSearchResults] = useState<UserProfile[]>([]);
@@ -43,8 +43,7 @@ export const HomePage: React.FC = () => {
         return () => unsubscribe();
 
     }, []);
-
-    const { posts, createPost, isLoading, error } = usePosts(idToken);
+    const { posts, createFollowPost, isLoading, error } = useFollowPosts(idToken);
     const handleSearch = async (query: string) => {
         setIsLoadingResults(true);
         setSearchError(null);
@@ -66,11 +65,11 @@ export const HomePage: React.FC = () => {
 
     const handleLatestClick = () => {
         // 最新の投稿を再取得
-        window.location.reload();
+        navigate('/');
     };
 
     const handleFollowingClick = () => {
-        navigate('/following');
+        window.location.reload();
     };
 
     const homeHeaderButtons: HeaderButtonType[] = [
@@ -116,7 +115,7 @@ export const HomePage: React.FC = () => {
                     </SearchResultsContainer>
                 </div>
             )}
-            <CreatePostForm onSubmit={createPost} idToken={idToken} />
+            <CreatePostForm onSubmit={createFollowPost} idToken={idToken} />
             {isLoading && <div>読み込み中...</div>}
             {error && <div style={{ color: 'red' }}>{error}</div>}
             {posts.map(post => {
@@ -131,8 +130,8 @@ export const HomePage: React.FC = () => {
                             text: post.text,
                             image: post.image,
                             createdAt: post.createdAt,
-                            likeCount: post.likeCount || 0,
-                            commentCount: post.commentCount || 0
+                            likeCount: 0,
+                            commentCount: 0
                         }}
                         user={{
                             name: post.name,
